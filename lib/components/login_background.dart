@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:project/global/constant.dart';
 
 class Background extends StatelessWidget {
   final Widget child;
@@ -20,7 +21,7 @@ class Background extends StatelessWidget {
               top: 0,
               left: 0,
               child: Image.asset(
-                "assets/images/takenote_login.png",
+                Constants.IMAGE_FOLDER_REF + "takenote_login.png",
                 width: size.width * 0.3,
               )),
           child,

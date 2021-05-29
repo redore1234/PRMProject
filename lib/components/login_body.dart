@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:project/components/login_background.dart';
+import 'package:project/global/constant.dart';
+import 'package:project/global/main-tab-bar.dart';
 
 class LoginBody extends StatelessWidget {
   @override
@@ -17,7 +19,7 @@ class LoginBody extends StatelessWidget {
             style: TextStyle(fontWeight: FontWeight.bold, fontSize: 30),
           ),
           Image.asset(
-            "assets/images/school_login.png",
+            Constants.IMAGE_FOLDER_REF + "school_login.png",
             height: size.height * 0.5,
           ),
           SizedBox(
@@ -30,7 +32,10 @@ class LoginBody extends StatelessWidget {
                   borderRadius: BorderRadius.circular(30)),
               padding: EdgeInsets.symmetric(vertical: 20, horizontal: 40),
               color: Colors.orangeAccent,
-              onPressed: () {},
+              onPressed: () {
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => MainTabBar()));
+              },
               child: Row(
                 children: [
                   SizedBox(
@@ -45,7 +50,7 @@ class LoginBody extends StatelessWidget {
                     width: 20,
                   ),
                   Image.asset(
-                    "assets/images/google.png",
+                    Constants.IMAGE_FOLDER_REF + "google.png",
                     height: 20,
                     width: 20,
                   )
