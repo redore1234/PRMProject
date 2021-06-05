@@ -1,11 +1,14 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:project/screen/home/home.dart';
 import 'package:project/screen/profile/profile.dart';
 
 final GlobalKey<NavigatorState> firstTabNavKey = GlobalKey<NavigatorState>();
 final GlobalKey<NavigatorState> secondTabNavKey = GlobalKey<NavigatorState>();
 final GlobalKey<NavigatorState> thirdTabNavKey = GlobalKey<NavigatorState>();
+final GlobalKey<NavigatorState> forthTabNavKey = GlobalKey<NavigatorState>();
 
 class MainTabBar extends StatefulWidget {
   @override
@@ -21,9 +24,9 @@ class _MainTabBarState extends State<MainTabBar> {
           BottomNavigationBarItem(
             icon: Icon(Icons.home),
           ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.calendar_today),
-          ),
+          // BottomNavigationBarItem(
+          //   icon: Icon(Icons.calendar_today),
+          // ),
           BottomNavigationBarItem(
             icon: Icon(Icons.more_horiz),
           ),

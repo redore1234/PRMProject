@@ -1,12 +1,13 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:project/global/constant.dart';
+import 'package:project/provider/google_signin.dart';
+import 'package:provider/provider.dart';
 
-class ProfilePage extends StatefulWidget {
-  @override
-  _ProfileState createState() => _ProfileState();
-}
+class ProfilePage extends StatelessWidget {
+  final user = FirebaseAuth.instance.currentUser;
 
-class _ProfileState extends State<ProfilePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -24,11 +25,11 @@ class _ProfileState extends State<ProfilePage> {
           SizedBox(
             height: 20,
           ),
-          _heading("Personal Details"),
+          _heading("Details"),
           SizedBox(
             height: 10,
           ),
-          _detailsCard("longpt@fpt.edu.vn", "Long"),
+          _detailsCard(user.email, user.displayName),
           SizedBox(
             height: 20,
           ),
@@ -40,7 +41,7 @@ class _ProfileState extends State<ProfilePage> {
           SizedBox(
             height: 30,
           ),
-          logoutButton()
+          logoutButton(context)
         ],
       )),
     );
@@ -68,9 +69,8 @@ class _ProfileState extends State<ProfilePage> {
   }
 
   Widget _heading(String heading) {
-    Size size = MediaQuery.of(context).size;
     return Container(
-        width: size.width * 0.8,
+        width: 100,
         child: Text(
           heading,
           style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
@@ -134,10 +134,12 @@ class _ProfileState extends State<ProfilePage> {
     );
   }
 
-  Widget logoutButton() {
+  Widget logoutButton(context) {
     return InkWell(
       onTap: () {
-        print("Hello");
+        final provider =
+            Provider.of<GoogleSignInProvider>(context, listen: false);
+        provider.logout();
       },
       child: Container(
         child: Padding(

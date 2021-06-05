@@ -1,9 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:project/components/login_background.dart';
 import 'package:project/global/constant.dart';
-import 'package:project/global/main-tab-bar.dart';
+// import 'package:google_sign_in/google_sign_in.dart';
+import 'package:project/provider/google_signin.dart';
+import 'package:provider/provider.dart';
 
-class LoginBody extends StatelessWidget {
+class LoginBody extends StatefulWidget {
+  @override
+  State createState() => _LoginState();
+}
+
+class _LoginState extends State<LoginBody> {
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size; //total height and width of screen
@@ -33,8 +40,9 @@ class LoginBody extends StatelessWidget {
               padding: EdgeInsets.symmetric(vertical: 20, horizontal: 40),
               color: Colors.orangeAccent,
               onPressed: () {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => MainTabBar()));
+                final provider =
+                    Provider.of<GoogleSignInProvider>(context, listen: false);
+                provider.login();
               },
               child: Row(
                 children: [

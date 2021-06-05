@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "173110695858",
+    "project_id": "ftask-e5657",
+    "storage_bucket": "ftask-e5657.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:173110695858:android:41e31c24816a1fc30176ab",
+        "android_client_info": {
+          "package_name": "com.example.project"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "173110695858-ihqjid87j2u2e2djh0sfcphnrpogjbsq.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.project",
+            "certificate_hash": "da87a89a5eae23bd4417ed11c6b0bd8f36c08a56"
+          }
+        },
+        {
+          "client_id": "173110695858-9h743cgqu9ad0dnl3uqog1r08sgpjdk6.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCL36DN4EqvHr4jVMlRWKjfSXiNZeQrvLU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "173110695858-9h743cgqu9ad0dnl3uqog1r08sgpjdk6.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
