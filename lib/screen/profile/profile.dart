@@ -1,6 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:google_sign_in/google_sign_in.dart';
 import 'package:project/global/constant.dart';
 import 'package:project/provider/google_signin.dart';
 import 'package:provider/provider.dart';
@@ -25,7 +24,7 @@ class ProfilePage extends StatelessWidget {
           SizedBox(
             height: 20,
           ),
-          _heading("Details"),
+          _heading("Personal Details"),
           SizedBox(
             height: 10,
           ),
@@ -70,10 +69,10 @@ class ProfilePage extends StatelessWidget {
 
   Widget _heading(String heading) {
     return Container(
-        width: 100,
+        width: 130,
         child: Text(
           heading,
-          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+          style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
         ));
   }
 
@@ -89,7 +88,7 @@ class ProfilePage extends StatelessWidget {
               leading: Icon(Icons.email),
               title: Text(
                 email,
-                style: TextStyle(fontSize: 20),
+                style: TextStyle(fontSize: 14),
               ),
             ),
             Divider(

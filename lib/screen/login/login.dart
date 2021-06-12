@@ -1,6 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:project/components/login_body.dart';
+import 'package:project/screen/login/login_body.dart';
 import 'package:project/global/main-tab-bar.dart';
 import 'package:project/provider/google_signin.dart';
 import 'package:provider/provider.dart';
@@ -8,8 +8,9 @@ import 'package:provider/provider.dart';
 class LoginScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        body: ChangeNotifierProvider(
+    return SafeArea(
+        child: Scaffold(
+            body: ChangeNotifierProvider(
       create: (context) => GoogleSignInProvider(),
       child: StreamBuilder(
         stream: FirebaseAuth.instance.authStateChanges(),
@@ -26,7 +27,7 @@ class LoginScreen extends StatelessWidget {
           }
         },
       ),
-    ));
+    )));
   }
 
   Widget buildLoading() {

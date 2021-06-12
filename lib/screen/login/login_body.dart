@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:project/components/login_background.dart';
+import 'package:project/screen/login/login_background.dart';
 import 'package:project/global/constant.dart';
-// import 'package:google_sign_in/google_sign_in.dart';
 import 'package:project/provider/google_signin.dart';
 import 'package:provider/provider.dart';
 

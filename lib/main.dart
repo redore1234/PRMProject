@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:project/screen/login/login.dart';
 import 'package:firebase_core/firebase_core.dart';
+//import 'package:project/screen/subject/dropdown_semester.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -17,6 +18,7 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
       ),
       home: LoginScreen(),
+      //home: DropDown(),
     );
   }
 }

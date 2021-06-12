@@ -1,9 +1,9 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:google_sign_in/google_sign_in.dart';
 import 'package:project/screen/home/home.dart';
 import 'package:project/screen/profile/profile.dart';
+import 'package:project/screen/subject/subject.dart';
+import 'package:project/screen/task/task.dart';
 
 final GlobalKey<NavigatorState> firstTabNavKey = GlobalKey<NavigatorState>();
 final GlobalKey<NavigatorState> secondTabNavKey = GlobalKey<NavigatorState>();
@@ -22,12 +22,19 @@ class _MainTabBarState extends State<MainTabBar> {
       tabBar: CupertinoTabBar(
         items: [
           BottomNavigationBarItem(
+            title: Text("Home"),
             icon: Icon(Icons.home),
           ),
-          // BottomNavigationBarItem(
-          //   icon: Icon(Icons.calendar_today),
-          // ),
           BottomNavigationBarItem(
+            title: Text("Subject"),
+            icon: Icon(Icons.add_task_outlined),
+          ),
+          BottomNavigationBarItem(
+            title: Text("Task"),
+            icon: Icon(Icons.calendar_today),
+          ),
+          BottomNavigationBarItem(
+            title: Text("Profile"),
             icon: Icon(Icons.more_horiz),
           ),
         ],
@@ -38,14 +45,19 @@ class _MainTabBarState extends State<MainTabBar> {
             navigatorKey: firstTabNavKey,
             builder: (BuildContext context) => Home(),
           );
-          // } else if (index == 1) {
-          //   return CupertinoTabView(
-          //     navigatorKey: secondTabNavKey,
-          //     builder: (BuildContext context) => SchedulePage(),
-          //   );
-        } else {
+        } else if (index == 1) {
           return CupertinoTabView(
             navigatorKey: secondTabNavKey,
+            builder: (BuildContext context) => SubjectPage(),
+          );
+        } else if (index == 2) {
+          return CupertinoTabView(
+            navigatorKey: thirdTabNavKey,
+            builder: (BuildContext context) => TaskPage(),
+          );
+        } else {
+          return CupertinoTabView(
+            navigatorKey: forthTabNavKey,
             builder: (BuildContext context) => ProfilePage(),
           );
         }
