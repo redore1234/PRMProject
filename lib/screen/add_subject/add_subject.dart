@@ -175,6 +175,7 @@ class _AddSubjectPageState extends State<AddSubjectPage> {
             height: 30,
           ),
           Row(
+            mainAxisAlignment: MainAxisAlignment.start,
             children: [
               SizedBox(
                 width: 20,
@@ -183,19 +184,22 @@ class _AddSubjectPageState extends State<AddSubjectPage> {
               SizedBox(
                 width: 50,
               ),
-              SizedBox(
-                  width: 200,
-                  child: TextFormField(
-                    onChanged: (text) {
-                      description = text;
-                    },
-                    maxLines: 5,
-                    decoration: InputDecoration(
-                        border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(5))),
-                  ))
             ],
           ),
+          SizedBox(height: 20),
+          Container(
+              child: SizedBox(
+            width: 350,
+            child: TextFormField(
+              onChanged: (text) {
+                //description = text;
+              },
+              maxLines: 5,
+              decoration: InputDecoration(
+                  border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(5))),
+            ),
+          )),
           SizedBox(
             height: 30,
           ),
