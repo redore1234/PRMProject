@@ -27,6 +27,7 @@ class _UpdateSubjectPageState extends State<UpdateSubjectPage> {
   @override
   Widget build(BuildContext content) {
     Size size = MediaQuery.of(context).size;
+    final _formKey = GlobalKey<FormState>();
 
     return SafeArea(
         child: Scaffold(
@@ -47,6 +48,7 @@ class _UpdateSubjectPageState extends State<UpdateSubjectPage> {
             ),
             body: SingleChildScrollView(
                 child: Form(
+              key: _formKey,
               child: Column(
                 children: [
                   SizedBox(
