@@ -1,12 +1,14 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:project/global/app_state.dart';
 import 'package:project/global/constant.dart';
 import 'package:project/provider/google_signin.dart';
+import 'package:project/screen/login/login.dart';
 import 'package:provider/provider.dart';
 
 class ProfilePage extends StatelessWidget {
   final user = FirebaseAuth.instance.currentUser;
-
+  // final user = currentAccount;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -136,9 +138,8 @@ class ProfilePage extends StatelessWidget {
   Widget logoutButton(context) {
     return InkWell(
       onTap: () {
-        final provider =
-            Provider.of<GoogleSignInProvider>(context, listen: false);
-        provider.logout();
+        Authentication.signOut();
+        Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (BuildContext context) => LoginScreen()), (route) => false);
       },
       child: Container(
         child: Padding(

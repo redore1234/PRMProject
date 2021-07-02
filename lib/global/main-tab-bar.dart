@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:project/screen/home/home.dart';
 import 'package:project/screen/profile/profile.dart';
+import 'package:project/screen/search_subject/search_subject.dart';
 import 'package:project/screen/subject/subject.dart';
 import 'package:project/screen/task/task.dart';
 
@@ -14,7 +15,6 @@ class MainTabBar extends StatefulWidget {
   @override
   _MainTabBarState createState() => _MainTabBarState();
 }
-
 class _MainTabBarState extends State<MainTabBar> {
   @override
   Widget build(BuildContext context) {
@@ -53,7 +53,7 @@ class _MainTabBarState extends State<MainTabBar> {
         } else if (index == 2) {
           return CupertinoTabView(
             navigatorKey: thirdTabNavKey,
-            builder: (BuildContext context) => TaskPage(),
+            builder: (BuildContext context) => AddTaskSubject(),
           );
         } else {
           return CupertinoTabView(
