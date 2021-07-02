@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:project/global/main-tab-bar.dart';
+import 'package:project/screen/login/login.dart';
 import 'package:project/screen/login/login_background.dart';
 import 'package:project/global/constant.dart';
 import 'package:project/provider/google_signin.dart';
-import 'package:provider/provider.dart';
-
 class LoginBody extends StatefulWidget {
   @override
   State createState() => _LoginState();
@@ -39,9 +39,12 @@ class _LoginState extends State<LoginBody> {
               padding: EdgeInsets.symmetric(vertical: 20, horizontal: 40),
               color: Colors.orangeAccent,
               onPressed: () {
-                final provider =
-                    Provider.of<GoogleSignInProvider>(context, listen: false);
-                provider.login();
+                final user = Authentication.signInWithGoogle(context);
+                if (user!= null) {
+                  Navigator.pushReplacement(context, MaterialPageRoute(builder: (BuildContext context) {
+                    return MainTabBar();
+                  }));
+                }
               },
               child: Row(
                 children: [
@@ -51,7 +54,7 @@ class _LoginState extends State<LoginBody> {
                   Text(
                     "LOGIN BY FPT GMAIL",
                     style: TextStyle(
-                        color: Colors.white, fontWeight: FontWeight.bold),
+                          color: Colors.white, fontWeight: FontWeight.bold),
                   ),
                   SizedBox(
                     width: 20,

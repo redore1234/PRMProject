@@ -2,41 +2,52 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
-class GoogleSignInProvider extends ChangeNotifier {
-  final googleSignIn = GoogleSignIn();
-  bool _isSigningIn;
+class Authentication {
+  static GoogleSignIn googleSignIn;
 
-  GoogleSignInProvider() {
-    _isSigningIn = false;
-  }
+  static Future<User> signInWithGoogle(BuildContext context) async {
+    FirebaseAuth auth = FirebaseAuth.instance;
+    User user;
 
-  bool get isSigningIn => this._isSigningIn;
+    googleSignIn = GoogleSignIn();
 
-  set isSigningIn(value) {
-    this._isSigningIn = value;
-    notifyListeners();
-  }
+    final GoogleSignInAccount googleSignInAccount = await googleSignIn.signIn();
 
-  Future login() async {
-    _isSigningIn = true;
+    if (googleSignInAccount != null) {
+      final GoogleSignInAuthentication googleSignInAuthentication =
+          await googleSignInAccount.authentication;
 
-    final user = await googleSignIn.signIn();
-    if (user == null) {
-      _isSigningIn = false;
-      return;
-    } else {
-      final googleAuth = await user.authentication;
+      final AuthCredential credential = GoogleAuthProvider.credential(
+        accessToken: googleSignInAuthentication.accessToken,
+        idToken: googleSignInAuthentication.idToken,
+      );
 
-      final credential = GoogleAuthProvider.credential(
-          accessToken: googleAuth.accessToken, idToken: googleAuth.idToken);
+      try {
+        final UserCredential userCredential =
+            await auth.signInWithCredential(credential);
 
-      await FirebaseAuth.instance.signInWithCredential(credential);
+        user = userCredential.user;
+      } on FirebaseAuthException catch (e) {
+        if (e.code == 'account-exists-with-different-credential') {
+          // handle the error here
+        } else if (e.code == 'invalid-credential') {
+          // handle the error here
+        }
+      } catch (e) {
+        // handle the error here
+      }
+      print("Credential token: ${credential.token}");
+      print("Credential provider id: ${credential.providerId}");
+      print("AccessToken: ${googleSignInAuthentication.accessToken}");
+      print("ID Token: ${googleSignInAuthentication.idToken}");
+      print("AccessToken.length: ${googleSignInAuthentication.accessToken.length}");
+      print("IdToken.length: ${googleSignInAuthentication.idToken.length}");
 
-      _isSigningIn = false;
     }
+    return user;
   }
 
-  void logout() async {
+  static Future signOut() async {
     await googleSignIn.signOut();
     FirebaseAuth.instance.signOut();
   }

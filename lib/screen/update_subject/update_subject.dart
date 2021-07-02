@@ -1,341 +1,163 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:project/global/dropdown.dart';
+import 'package:project/models/subject_model.dart';
+import 'package:project/services/subject_service.dart';
+import 'package:project/widget/base_ontap_widget.dart';
 import 'package:switcher/core/switcher_size.dart';
 import 'package:switcher/switcher.dart';
 
 class UpdateSubjectPage extends StatefulWidget {
-  _UpdateSubjectPageState createState() => _UpdateSubjectPageState();
+  final String id;
+
+  const UpdateSubjectPage({Key key, @required this.id}) : super(key: key);
+
+  _UpdateSubjectPageState createState() => _UpdateSubjectPageState(this.id);
 }
 
 class _UpdateSubjectPageState extends State<UpdateSubjectPage> {
   DateTime selectedDate = DateTime.now();
-  //String estimateTime, description;
+  final String id;
+  var subjectIdController = TextEditingController();
+  var subjectNameController = TextEditingController();
+  var subjectSourceController = TextEditingController();
+  var subjectGroupIdController = TextEditingController();
 
-  Future<void> _selectDate(BuildContext context) async {
-    final DateTime picked = await showDatePicker(
-        context: context,
-        initialDate: selectedDate,
-        firstDate: DateTime(2015, 8),
-        lastDate: DateTime(2101));
-    if (picked != null && picked != selectedDate) {
-      setState(() {
-        selectedDate = picked;
-      });
-    }
+  _UpdateSubjectPageState(this.id);
+
+  void dispose() {
+    // Clean up the controller when the widget is disposed.
+    subjectIdController.dispose();
+    subjectNameController.dispose();
+    subjectSourceController.dispose();
+    subjectGroupIdController.dispose();
+    super.dispose();
   }
+
+  SubjectModel subject;
+
+  Future<void> load() async {
+    SubjectService.read(id: id).then((value) {
+      subject = value[0];
+      subjectIdController.value =
+          subjectIdController.value.copyWith(text: subject.id);
+      subjectNameController.value =
+          subjectIdController.value.copyWith(text: subject.name);
+      subjectSourceController.value =
+          subjectIdController.value.copyWith(text: subject.source);
+      subjectGroupIdController.value =
+          subjectIdController.value.copyWith(text: "${subject.subjectGroupId}");
+    });
+  }
+
+  @override
+  void initState() {
+    load();
+    super.initState();
+  }
+
+  final _formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext content) {
     Size size = MediaQuery.of(context).size;
-    final _formKey = GlobalKey<FormState>();
-
+    // subjectIdController.text = id;
     return SafeArea(
-        child: Scaffold(
-            appBar: AppBar(
-              leading: IconButton(
-                icon: Icon(
-                  Icons.arrow_back,
-                  color: Colors.black,
-                ),
-                onPressed: () => Navigator.of(context).pop(),
-              ),
-              title: Text(
-                "UPDATE TASK",
-                style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
-              ),
-              centerTitle: true,
-              actions: <Widget>[],
+      child: Scaffold(
+        resizeToAvoidBottomInset: false,
+        appBar: AppBar(
+          leading: IconButton(
+            icon: Icon(
+              Icons.arrow_back,
+              color: Colors.black,
             ),
-            body: SingleChildScrollView(
-                child: Form(
-              key: _formKey,
-              child: Column(
-                children: [
-                  SizedBox(
-                    height: 20,
+            onPressed: () => Navigator.of(context).pop(),
+          ),
+          title: Text(
+            "subject detail".toUpperCase(),
+            style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
+          ),
+          centerTitle: true,
+          actions: <Widget>[],
+        ),
+        body: SingleChildScrollView(
+          child: Form(
+            key: _formKey,
+            child: Column(
+              children: [
+                _formFieldContainer(
+                  "SubjectID: ",
+                  child: TextFormField(controller: subjectIdController),
+                ),
+                _formFieldContainer(
+                  "SubjectName: ",
+                  child: TextFormField(controller: subjectNameController),
+                ),
+                _formFieldContainer(
+                  "Source: ",
+                  child: TextFormField(
+                    controller: subjectSourceController,
                   ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      Text('Edit',
-                          style: TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                          )),
-                      SizedBox(
-                        width: 20,
-                      ),
-                      Switcher(
-                        value: false,
-                        size: SwitcherSize.medium,
-                        switcherButtonRadius: 50,
-                        enabledSwitcherButtonRotate: true,
-                        iconOff: Icons.lock,
-                        iconOn: Icons.lock_open,
-                        colorOff: Colors.grey.withOpacity(0.3),
-                        colorOn: Colors.grey,
-                        onChanged: (bool state) {
-                          //
-                        },
-                      ),
-                    ],
+                ),
+                _formFieldContainer(
+                  "SubjectGroupID: ",
+                  child: TextFormField(
+                    decoration: InputDecoration(),
+                    // initialValue:
+                    // "${snapshot.data[0].subjectGroupId}",
+                    controller: subjectGroupIdController,
                   ),
-                  Column(
-                    children: [
-                      SizedBox(
-                        height: 30,
-                      ),
-                      Row(
-                        children: [
-                          SizedBox(
-                            width: 20,
-                          ),
-                          _labelTitle('Subject'),
-                          SizedBox(
-                            width: 125,
-                          ),
-                          DropDown(
-                              arrayList: ['PRM391', 'SWD392'],
-                              valueSelected: 'PRM391')
-                        ],
-                      ),
-                      SizedBox(
-                        height: 30,
-                      ),
-                      Row(
-                        children: [
-                          SizedBox(
-                            width: 20,
-                          ),
-                          _labelTitle('Topic'),
-                          SizedBox(
-                            width: 143,
-                          ),
-                          DropDown(
-                              arrayList: ['PRM391', 'SWD392'],
-                              valueSelected: 'PRM391')
-                        ],
-                      ),
-                      SizedBox(
-                        height: 30,
-                      ),
-                      Row(
-                        children: [
-                          SizedBox(
-                            width: 20,
-                          ),
-                          _labelTitle('Category'),
-                          SizedBox(
-                            width: 110,
-                          ),
-                          DropDown(
-                              arrayList: ['PRM391', 'SWD392'],
-                              valueSelected: 'PRM391')
-                        ],
-                      ),
-                      SizedBox(
-                        height: 30,
-                      ),
-                      Row(
-                        children: [
-                          SizedBox(
-                            width: 20,
-                          ),
-                          _labelTitle('Priority'),
-                          SizedBox(
-                            width: 125,
-                          ),
-                          DropDown(
-                              arrayList: ['PRM391', 'SWD392'],
-                              valueSelected: 'PRM391')
-                        ],
-                      ),
-                      SizedBox(
-                        height: 30,
-                      ),
-                      Row(
-                        children: [
-                          SizedBox(
-                            width: 20,
-                          ),
-                          _labelTitle('Due Date'),
-                          SizedBox(
-                            width: 110,
-                          ),
-                          SizedBox(
-                            width: 100,
-                            child: TextFormField(
-                              style: TextStyle(fontSize: 20),
-                              focusNode: AlwaysDisabledFocusNode(),
-                              decoration: InputDecoration(
-                                border: InputBorder.none,
-                              ),
-                              controller: TextEditingController(
-                                  text: '${selectedDate.toLocal()}'
-                                      .split(' ')[0]),
-                              onTap: () {
-                                _selectDate(context);
-                              },
-                            ),
-                          )
-                        ],
-                      ),
-                      SizedBox(
-                        height: 30,
-                      ),
-                      Row(
-                        children: [
-                          SizedBox(
-                            width: 20,
-                          ),
-                          _labelTitle('Estimated Time'),
-                          SizedBox(
-                            width: 50,
-                          ),
-                          SizedBox(
-                            width: 50,
-                            child: TextFormField(
-                              // validator: (String value) {
-                              //   if (value.isEmpty) {
-                              //     return "Field is not empty";
-                              //   }
-                              //   return null;
-                              // },
-                              decoration: InputDecoration(),
-                              onChanged: (text) {
-                                //estimateTime = text;
-                              },
-                            ),
-                          ),
-                          SizedBox(
-                            width: 15,
-                          ),
-                          Text(
-                            'times',
-                            style: TextStyle(fontSize: 20),
-                          )
-                        ],
-                      ),
-                      SizedBox(
-                        height: 30,
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          SizedBox(
-                            width: 20,
-                          ),
-                          _labelTitle('Description'),
-                          SizedBox(
-                            width: 50,
-                          ),
-                        ],
-                      ),
-                      SizedBox(height: 20),
-                      Container(
-                          child: SizedBox(
-                        width: 350,
-                        child: TextFormField(
-                          onChanged: (text) {
-                            //description = text;
-                          },
-                          maxLines: 5,
-                          decoration: InputDecoration(
-                              border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(5))),
-                        ),
-                      )),
-                      SizedBox(
-                        height: 30,
-                      ),
-                      SizedBox(
-                        width: 300,
-                        child: Divider(
-                          color: Colors.black,
-                          thickness: 1,
-                        ),
-                      ),
-                      SizedBox(
-                        height: 30,
-                      ),
-                      Row(
-                        children: [
-                          SizedBox(
-                            width: 20,
-                          ),
-                          _labelTitle('Status'),
-                          SizedBox(
-                            width: 80,
-                          ),
-                          DropDown(
-                              arrayList: ['PRM391', 'SWD392'],
-                              valueSelected: 'PRM391')
-                        ],
-                      ),
-                      SizedBox(
-                        height: 30,
-                      ),
-                      Row(
-                        children: [
-                          SizedBox(
-                            width: 20,
-                          ),
-                          _labelTitle('Effort Time'),
-                          SizedBox(
-                            width: 30,
-                          ),
-                          SizedBox(
-                            width: 50,
-                            child: TextFormField(
-                              decoration: InputDecoration(),
-                              onChanged: (text) {
-                                //estimateTime = text;
-                              },
-                            ),
-                          ),
-                          SizedBox(
-                            width: 15,
-                          ),
-                          Text(
-                            'times',
-                            style: TextStyle(fontSize: 20),
-                          )
-                        ],
-                      ),
-                      SizedBox(
-                        height: 30,
-                      ),
-                      Container(
-                          width: size.width * 0.8,
-                          alignment: Alignment.center,
-                          child: FlatButton(
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(30.0)),
-                            padding: EdgeInsets.symmetric(
-                                vertical: 20, horizontal: 40),
-                            color: Colors.orangeAccent,
-                            onPressed: () {},
-                            child: Text(
-                              'UPDATE TASK',
-                              style: TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold),
-                            ),
-                          ))
-                    ],
-                  )
-                ],
+                ),
+                BaseOnTapWidget(
+                  onTap: () {
+                    final String id = subjectIdController.text;
+                    final String name = subjectNameController.text;
+                    final String source = subjectSourceController.text;
+                    final int subjectGroupId =
+                        int.parse(subjectGroupIdController.text);
+                    if (_formKey.currentState.validate()) {
+                      SubjectModel subjectModel =
+                          new SubjectModel(id, name, source, subjectGroupId);
+                      SubjectService.update(subjectModel);
+                    }
+                  },
+                  child: Container(
+                    color: Colors.black,
+                    padding: EdgeInsets.symmetric(horizontal: 30, vertical: 16),
+                    child: Text(
+                      "Save",
+                      style: TextStyle(color: Colors.white),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _formFieldContainer(String title, {Widget child}) {
+    return Container(
+        width: MediaQuery.of(context).size.width,
+        padding: EdgeInsets.symmetric(horizontal: 30, vertical: 30),
+        child: Column(
+          children: [
+            Align(
+              alignment: Alignment.centerLeft,
+              child: Text(
+                title,
+                style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
               ),
-            ))));
+            ),
+            child
+          ],
+        ));
   }
 
   Widget _labelTitle(String title) {
     return Text(title,
         style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20));
   }
-}
-
-class AlwaysDisabledFocusNode extends FocusNode {
-  @override
-  bool get hasFocus => false;
 }
