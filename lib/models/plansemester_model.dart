@@ -3,7 +3,7 @@ class PlanSemesterModel{
   String planSemesterName;
   String studentId;
   String semesterId;
-  DateTime createDate;
+  String  createDate;
   bool isComplete;
 
   PlanSemesterModel(this.planSemesterId, this.planSemesterName, this.studentId, this.semesterId,
@@ -26,5 +26,6 @@ class PlanSemesterModel{
     data['semesterId'] = this.semesterId;
     data['createDate'] = this.createDate;
     data['isComplete'] = this.isComplete;
+    return data;
   }
 }

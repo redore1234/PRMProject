@@ -1,13 +1,17 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 class Authentication {
   static GoogleSignIn googleSignIn;
+  static  String token;
+  static String provider;
 
   static Future<User> signInWithGoogle(BuildContext context) async {
     FirebaseAuth auth = FirebaseAuth.instance;
     User user;
+
 
     googleSignIn = GoogleSignIn();
 
@@ -21,7 +25,6 @@ class Authentication {
         accessToken: googleSignInAuthentication.accessToken,
         idToken: googleSignInAuthentication.idToken,
       );
-
       try {
         final UserCredential userCredential =
             await auth.signInWithCredential(credential);
@@ -29,19 +32,37 @@ class Authentication {
         user = userCredential.user;
       } on FirebaseAuthException catch (e) {
         if (e.code == 'account-exists-with-different-credential') {
-          // handle the error here
+          ScaffoldMessenger.of(context).showSnackBar(
+            Authentication.customSnackBar(
+              content:
+              'The account already exists with a different credential.',
+            ),
+          );
         } else if (e.code == 'invalid-credential') {
-          // handle the error here
+
+          ScaffoldMessenger.of(context).showSnackBar(
+            Authentication.customSnackBar(
+              content:
+              'Error occurred while accessing credentials. Try again.',
+            ),
+          );
         }
       } catch (e) {
-        // handle the error here
+        ScaffoldMessenger.of(context).showSnackBar(
+          Authentication.customSnackBar(
+            content: 'Error occurred using Google Sign-In. Try again.',
+          ),
+        );
       }
-      print("Credential token: ${credential.token}");
-      print("Credential provider id: ${credential.providerId}");
-      print("AccessToken: ${googleSignInAuthentication.accessToken}");
-      print("ID Token: ${googleSignInAuthentication.idToken}");
-      print("AccessToken.length: ${googleSignInAuthentication.accessToken.length}");
-      print("IdToken.length: ${googleSignInAuthentication.idToken.length}");
+      // print("Credential token: ${credential.token}");
+      // print("Credential provider id: ${credential.providerId}");
+      // print("AccessToken: ${googleSignInAuthentication.accessToken}");
+      // print("ID Token: ${googleSignInAuthentication.idToken}");
+      // print("AccessToken.length: ${googleSignInAuthentication.accessToken.length}");
+      // print("IdToken.length: ${googleSignInAuthentication.idToken.length}");
+      token =  "${googleSignInAuthentication.idToken}";
+      provider =  "${credential.providerId}";
+
 
     }
     return user;
@@ -50,5 +71,14 @@ class Authentication {
   static Future signOut() async {
     await googleSignIn.signOut();
     FirebaseAuth.instance.signOut();
+  }
+  static SnackBar customSnackBar({@required String content}) {
+    return SnackBar(
+      backgroundColor: Colors.black,
+      content: Text(
+        content,
+        style: TextStyle(color: Colors.redAccent, letterSpacing: 0.5),
+      ),
+    );
   }
 }

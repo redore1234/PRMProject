@@ -1,10 +1,24 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:project/global/constant.dart';
+import 'package:project/global/variable.dart';
+import 'package:project/models/login_models.dart';
 import 'package:project/models/major_model.dart';
+import 'package:project/models/plansemester_model.dart';
+import 'package:project/models/plansubject_model.dart';
+import 'package:project/models/semester_model.dart';
+import 'package:project/models/student_model.dart';
 import 'package:project/models/subject_model.dart';
+import 'package:project/provider/google_signin.dart';
 import 'package:project/screen/add_subject/add_subject.dart';
 import 'package:project/screen/search_subject/search_subject.dart';
+import 'package:project/screen/student/add_student.dart';
 import 'package:project/screen/update_subject/update_subject.dart';
+import 'package:project/services/login_service.dart';
 import 'package:project/services/major_service.dart';
+import 'package:project/services/plan_semester_service.dart';
+import 'package:project/services/semester_service.dart';
+import 'package:project/services/student_service.dart';
 import 'package:project/services/subject_service.dart';
 
 import '../../global/dropdown.dart';
@@ -15,128 +29,173 @@ class SubjectPage extends StatefulWidget {
 }
 
 class _SubjectPageState extends State<SubjectPage> {
- final Future<List<MajorModel>> items = MajorService.read();
+  final user = FirebaseAuth.instance.currentUser;
+  String dropdownValue = 'Summer 2021';
+  int index = 0;
+  String semesterId;
+  String studentId = "SE140129";
+  int planSemesterId;
+  List<PlanSubjectModel> list = new List<PlanSubjectModel>();
+
+  void changeList(String StudentId, String SemesterId, String bearerToken){
+    setState(() {
+      // API theo StudentId, SemesterId, lấy ra PlanSemester,
+      FutureBuilder(
+        future: PlanSemesterService.read(studentId: studentId, bearerToken: bearerToken),
+        builder: (BuildContext context, snapshot){
+          if(snapshot.hasData){
+            final data = snapshot.data as List<PlanSemesterModel>;
+            planSemesterId = 0;
+            for (var i = 0; i < data.length; i++) {
+              if(data[i].semesterId == semesterId){
+                planSemesterId = data[i].planSemesterId;
+              }
+            }
+
+          }
+          return Container();
+        }
+      );
+
+    });
+  }
+
+
+
+
+   // final String bearerToken = LoginService.bearerToken;
+
   @override
   Widget build(BuildContext context) {
-    final size = MediaQuery.of(context).size;
+    // FutureBuilder (
+    //     future: StudentService.read(email: user.email, bearerToken: Authentication.token),
+    //     builder: (BuildContext context, snapshot) {
+    //       if(snapshot.data){
+    //         final data = snapshot.data as StudentModel;
+    //         studentId = data.studentId;
+    //       }
+    //       return Container();
+    //     }
+    // );
+
+    Size size = MediaQuery.of(context).size;
     return SafeArea(
-        child: Scaffold(
-      appBar: AppBar(
-        leading: IconButton(
-          icon: Icon(
-            Icons.arrow_back,
-            color: Colors.black,
+      child: Scaffold(
+        appBar: AppBar(
+          leading: IconButton(
+            icon: Icon(
+              Icons.arrow_back,
+              color: Colors.black,
+            ),
+            onPressed: () => Navigator.of(context).pop(),
           ),
-          onPressed: () => Navigator.of(context).pop(),
+          title: Text("MAJOR"),
+          centerTitle: true,
+          shadowColor: Colors.white,
         ),
-        title: Text("Summer 2021"),
-        centerTitle: true,
-        shadowColor: Colors.white,
-      ),
-      body: Container(
+        body: Container(
           child: FutureBuilder(
-            future: MajorService.read(),
-            builder: (BuildContext context, snapshot){
-              if(snapshot.hasData){
-                print("hasdata major");
-                final data = snapshot.data as List<MajorModel>;
-                List<String> lstName = new List<String>();
-                for( var i = 0 ; i < data.length ; i++ ) {
-                  lstName.add(data[i].name);
-                }
-                return Container(
-                  child: Column(
-                    children: [
-                      Row(
-                        children: [
-                          SizedBox(
-                            width: 20,
-                          ),
-
-                          DropDown(
-
-                            arrayList: lstName,
-                            valueSelected: lstName.first,
-
-
-                            // valueSelected: "Semester 1",
-                          ),
-                          SizedBox(
-                            width: 120,
-                          ),
-                          IconButton(
-                            onPressed: () {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => AddSubjectPage()));
-                            },
-                            icon: Icon(Icons.add_circle_outline_outlined),
-                            iconSize: 25,
-                          ),
-                          SizedBox(
-                            width: 5,
-                          ),
-                          IconButton(
-                            onPressed: () {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) =>
-                                          SearchSubjectPage(searchValue: "")));
-                            },
-                            icon: Icon(Icons.change_circle_outlined),
-                            iconSize: 25,
-                          )
-                        ],
-                      ),
-                      SizedBox(height: 5),
-                      Expanded(
-                        child: FutureBuilder(
-                          future: SubjectService.read(),
-                          builder: (BuildContext context, snapshot) {
-                            if (snapshot.hasData) {
-                              return ListView.builder(
-                                itemCount: snapshot.data.length,
-                                itemBuilder: (context, index) {
-                                  return Padding(
-                                    padding: const EdgeInsets.symmetric(vertical: 10),
-                                    child: subjectCourse(
-                                      context,
-                                      snapshot.data[index].id,
-                                      snapshot.data[index].name,
-                                      snapshot.data[index].source,
-                                      '${snapshot.data[index].subjectGroupId}',
-                                    ),
-                                  );
-                                },
-                              );
-                            } else {
-                              return Center(
-                                child: CircularProgressIndicator(
-                                  semanticsLabel: 'Loading...',
-                                ),
-                              );
-                            }
-                          },
-                        ),
-                      ),
-                    ],
-                  ),
-                );
-              }else{
-                return Center(
-                  child: CircularProgressIndicator(
-                    semanticsLabel: 'Loading.....',
-                  ),
-                );
+            future: LoginService.getToken(),
+            builder: (BuildContext context, snapshot) {
+              if (snapshot.hasData) {
+                final data = snapshot.data as LoginModel;
+                currentUser = data;
+                bearerToken = data.message;
               }
+              return Container(
+                  width: size.width,
+                  child: FutureBuilder(
+                    future: SemesterService.read(bearerToken: bearerToken),
+                    builder: (BuildContext context, snapshot) {
+                      if (snapshot.hasData) {
+                        final data = snapshot.data as List<SemesterModel>;
+                        List<SemesterModel> listSemester = new List<SemesterModel>();
+
+                        List<String> lstName = new List<String>();
+                        for (var i = 0; i < data.length; i++) {
+                          lstName.add(data[i].semesterName);
+                        }
+                        return Container(
+                          child: Column(
+                            children: [
+                              Expanded(
+                                child: Row(
+                                  children: [
+                                    DropdownButton<String>(
+                                      value: dropdownValue,
+                                      icon: Icon(Icons.arrow_drop_down),
+                                      iconSize: 24,
+                                      elevation: 16,
+                                      style: TextStyle(color: Colors.red, fontSize: 18),
+                                      underline: Container(
+                                        height: 2,
+                                        color: Colors.deepPurpleAccent,
+                                      ),
+                                      onChanged: (String value) {
+                                        setState(() {
+                                          index = lstName.indexOf(value);
+
+
+                                          dropdownValue = value ;
+                                          semesterId = data.elementAt(index).semesterId;
+                                          changeList(studentId, semesterId, bearerToken);
+                                          print(planSemesterId);
+                                        });
+                                      },
+                                      items: lstName.map<DropdownMenuItem<String>>((String value) {
+                                        return DropdownMenuItem<String>(
+                                          value: value,
+                                          child: Text(value),
+                                        );
+                                      }).toList(),
+                                    ),
+
+                                    IconButton(
+                                      onPressed: () {
+
+                                      },
+                                      icon:
+                                      Icon(Icons.add_circle_outline_outlined),
+                                      iconSize: 25,
+                                    ),
+
+                                  ],
+                                ),
+                                flex: 1,
+                              ),
+
+                              Expanded(
+                                child: Container(
+                                  color: Colors.green,
+
+
+
+                                ),
+                                flex: 12,
+                              )
+
+                            ],
+                          ),
+                        );
+                      } else {
+                        return Center(
+                          child: CircularProgressIndicator(
+                            semanticsLabel: 'Loading.....',
+                          ),
+                        );
+                      }
+                    },
+                  ));
             },
-          )
+          ),
+          //
+        ),
       ),
-        ));
+    );
   }
 }
+
+
 
 Widget subjectCourse(BuildContext context, String subjectCode,
     String subjectName, String source, String taskOngoing) {
@@ -162,7 +221,7 @@ Widget subjectCourse(BuildContext context, String subjectCode,
               children: [
                 Text(subjectCode,
                     style:
-                    TextStyle(fontSize: 15, fontWeight: FontWeight.bold)),
+                        TextStyle(fontSize: 15, fontWeight: FontWeight.bold)),
                 Text(
                   subjectName,
                   style: TextStyle(fontWeight: FontWeight.bold),
