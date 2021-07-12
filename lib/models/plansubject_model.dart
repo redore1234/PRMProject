@@ -2,7 +2,7 @@ class PlanSubjectModel{
   int planSubjectId;
   int priority;
   int progress;
-  DateTime createDate;
+  String  createDate;
   bool isComplete;
   int planSemesterId;
   String subjectId;

@@ -3,7 +3,7 @@ import 'package:project/global/variable.dart';
 import 'package:project/models/login_models.dart';
 import 'package:project/models/semester_model.dart';
 import 'package:project/screen/subject/plan_subject_.dart';
-import 'package:project/screen/update_subject/update_subject.dart';
+import 'package:project/screen/update_subject/subject_detail.dart';
 import 'package:project/services/login_service.dart';
 import 'package:project/services/semester_service.dart';
 

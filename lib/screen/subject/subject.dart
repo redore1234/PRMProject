@@ -13,10 +13,11 @@ import 'package:project/provider/google_signin.dart';
 import 'package:project/screen/add_subject/add_subject.dart';
 import 'package:project/screen/search_subject/search_subject.dart';
 import 'package:project/screen/student/add_student.dart';
-import 'package:project/screen/update_subject/update_subject.dart';
+import 'package:project/screen/update_subject/subject_detail.dart';
 import 'package:project/services/login_service.dart';
 import 'package:project/services/major_service.dart';
 import 'package:project/services/plan_semester_service.dart';
+import 'package:project/services/plan_subject_service.dart';
 import 'package:project/services/semester_service.dart';
 import 'package:project/services/student_service.dart';
 import 'package:project/services/subject_service.dart';
@@ -32,12 +33,14 @@ class _SubjectPageState extends State<SubjectPage> {
   final user = FirebaseAuth.instance.currentUser;
   String dropdownValue = 'Summer 2021';
   int index = 0;
-  String semesterId;
+  String semesterId = "SUM_21";
   String studentId = "SE140129";
+  String bearerToken;
+
   int planSemesterId;
   List<PlanSubjectModel> list = new List<PlanSubjectModel>();
 
-  void changeList(String StudentId, String SemesterId, String bearerToken){
+  void changeList(){
     setState(() {
       // API theo StudentId, SemesterId, lấy ra PlanSemester,
       FutureBuilder(
@@ -53,7 +56,8 @@ class _SubjectPageState extends State<SubjectPage> {
             }
 
           }
-          return Container();
+          return Container(
+          );
         }
       );
 
@@ -81,18 +85,6 @@ class _SubjectPageState extends State<SubjectPage> {
     Size size = MediaQuery.of(context).size;
     return SafeArea(
       child: Scaffold(
-        appBar: AppBar(
-          leading: IconButton(
-            icon: Icon(
-              Icons.arrow_back,
-              color: Colors.black,
-            ),
-            onPressed: () => Navigator.of(context).pop(),
-          ),
-          title: Text("MAJOR"),
-          centerTitle: true,
-          shadowColor: Colors.white,
-        ),
         body: Container(
           child: FutureBuilder(
             future: LoginService.getToken(),
@@ -109,8 +101,6 @@ class _SubjectPageState extends State<SubjectPage> {
                     builder: (BuildContext context, snapshot) {
                       if (snapshot.hasData) {
                         final data = snapshot.data as List<SemesterModel>;
-                        List<SemesterModel> listSemester = new List<SemesterModel>();
-
                         List<String> lstName = new List<String>();
                         for (var i = 0; i < data.length; i++) {
                           lstName.add(data[i].semesterName);
@@ -138,7 +128,7 @@ class _SubjectPageState extends State<SubjectPage> {
 
                                           dropdownValue = value ;
                                           semesterId = data.elementAt(index).semesterId;
-                                          changeList(studentId, semesterId, bearerToken);
+                                          // changeList();
                                           print(planSemesterId);
                                         });
                                       },
@@ -166,7 +156,54 @@ class _SubjectPageState extends State<SubjectPage> {
 
                               Expanded(
                                 child: Container(
-                                  color: Colors.green,
+                                  color: Colors.grey,
+
+                                    child:  FutureBuilder(
+                                        future: PlanSemesterService.read(studentId: studentId, bearerToken: bearerToken),
+                                        builder: (BuildContext context, snapshot){
+                                          if(snapshot.hasData){
+                                            final data = snapshot.data as List<PlanSemesterModel>;
+                                            planSemesterId = 0;
+                                            for (var i = 0; i < data.length; i++) {
+                                              if(data[i].semesterId == semesterId){
+                                                planSemesterId = data[i].planSemesterId;
+                                              }
+                                            }
+
+                                          }
+                                          return Container(
+                                            child: FutureBuilder(
+                                              future: PlanSubjectService.read(planSemesterId: planSemesterId, bearerToken: bearerToken),
+                                              builder: (BuildContext context, snapshot) {
+                                                if (snapshot.hasData) {
+                                                  return ListView.builder(
+                                                    itemCount: snapshot.data.length,
+                                                    itemBuilder: (context, index) {
+                                                      return Padding(
+                                                        padding: const EdgeInsets.symmetric(vertical: 10),
+                                                        child: subjectCourse(
+                                                          context,
+                                                          snapshot.data[index].subjectId,
+                                                          snapshot.data[index].createDate,
+                                                          '${snapshot.data[index].progress}',
+                                                          snapshot.data[index].planSubjectId,
+                                                          bearerToken,
+                                                        ),
+                                                      );
+                                                    },
+                                                  );
+                                                } else {
+                                                  return Center(
+                                                    child: CircularProgressIndicator(
+                                                      semanticsLabel: 'Loading...',
+                                                    ),
+                                                  );
+                                                }
+                                              },
+                                            ),
+                                          );
+                                        }
+                                    ),
 
 
 
@@ -198,7 +235,7 @@ class _SubjectPageState extends State<SubjectPage> {
 
 
 Widget subjectCourse(BuildContext context, String subjectCode,
-    String subjectName, String source, String taskOngoing) {
+    String subjectName, String taskOngoing, int planSubjectId, String bearerToken) {
   return FlatButton(
       padding: EdgeInsets.all(20),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
@@ -209,7 +246,7 @@ Widget subjectCourse(BuildContext context, String subjectCode,
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => UpdateSubjectPage(id: subjectCode),
+            builder: (context) => UpdateSubjectPage(id: subjectCode,  planSubjectId: planSubjectId, bearerToken: bearerToken),
           ),
         );
         print("pressed");
@@ -226,10 +263,7 @@ Widget subjectCourse(BuildContext context, String subjectCode,
                   subjectName,
                   style: TextStyle(fontWeight: FontWeight.bold),
                 ),
-                Text(
-                  source,
-                  style: TextStyle(fontWeight: FontWeight.bold),
-                ),
+
                 Text(
                   "Ongoing tasked: " + taskOngoing,
                 ),

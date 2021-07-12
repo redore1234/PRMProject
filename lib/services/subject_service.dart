@@ -35,7 +35,11 @@ class SubjectService {
     }
 
   }
-
+  // static Future <SubjectModel> getSubjectById({String subjectId, String id, String bearerToken}) async{
+  //   final response = await HttpHelper.get(SUBJECT_ENDPOINT +"/"+ id, bearerToken: bearerToken);
+  //   final data = SubjectModel.fromJson(jsonDecode(response.body));
+  //   return data;
+  // }
   static Future<SubjectModel> insert(SubjectModel model, String bearerToken) async {
     print(model.id);
     final response = await HttpHelper.post(SUBJECT_ENDPOINT, model.toJson(), bearerToken: bearerToken);

@@ -102,46 +102,45 @@ class _SearchSubjectPageState extends State<SearchSubjectPage> {
                       ),
                     ),
                   ),
-                  Container(
-                    height: size.height,
-                    width: double.infinity,
-                    child: searchValue != ""
-                        ? FutureBuilder(
-                            future: SubjectService.read(
-                                searchValue: searchValue),
-                            builder: (BuildContext context, snapshot) {
-                              if (snapshot.hasData) {
-                                // print("hasdata");
-                                return ListView.builder(
-                                  itemCount: snapshot.data.length,
-                                  itemBuilder: (context, index) {
-                                    return Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                          vertical: 10),
-                                      child: subjectCourse(
-                                        context,
-                                        snapshot.data[index].id,
-                                        snapshot.data[index].name,
-                                        snapshot.data[index].source,
-                                        '${snapshot.data[index].subjectGroupId}',
-                                      ),
-                                    );
-                                  },
-                                );
-                              } else {
-                                // print("nodata");
-                                return Center(
-                                  child: CircularProgressIndicator(
-                                    semanticsLabel: 'Loading...',
-                                  ),
-                                );
-                              }
-                            },
-                          )
-                        : Container(
-
-                          ),
-                  )
+                  // Container(
+                  //   height: size.height,
+                  //   width: double.infinity,
+                  //   child: searchValue != ""
+                  //       ? FutureBuilder(
+                  //           future: SubjectService.read(
+                  //               searchValue: searchValue),
+                  //           builder: (BuildContext context, snapshot) {
+                  //             if (snapshot.hasData) {
+                  //               // print("hasdata");
+                  //               return ListView.builder(
+                  //                 itemCount: snapshot.data.length,
+                  //                 itemBuilder: (context, index) {
+                  //                   return Padding(
+                  //                     padding: const EdgeInsets.symmetric(
+                  //                         vertical: 10),
+                  //                     child: subjectCourse(
+                  //                       context,
+                  //                       snapshot.data[index].id,
+                  //                       snapshot.data[index].name,
+                  //                       '${snapshot.data[index].subjectGroupId}',
+                  //                     ),
+                  //                   );
+                  //                 },
+                  //               );
+                  //             } else {
+                  //               // print("nodata");
+                  //               return Center(
+                  //                 child: CircularProgressIndicator(
+                  //                   semanticsLabel: 'Loading...',
+                  //                 ),
+                  //               );
+                  //             }
+                  //           },
+                  //         )
+                  //       : Container(
+                  //
+                  //         ),
+                  // )
                 ],
               ),
             ),

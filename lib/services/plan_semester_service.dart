@@ -17,10 +17,9 @@ class PlanSemesterService{
   }
   static Future<PlanSemesterModel> insert(PlanSemesterModel planSemesterModel, String bearerToken) async {
     print(planSemesterModel.planSemesterId);
-    final response = await HttpHelper.post(SUBJECT_ENDPOINT, planSemesterModel.toJson(), bearerToken: bearerToken);
+    final response = await HttpHelper.post(PLANSEMESTER_ENPOINT, planSemesterModel.toJson(), bearerToken: bearerToken);
     print('post');
     final data = PlanSemesterModel.fromJson(jsonDecode(response.body));
-    print(data.studentId);
     return data;
   }
 }

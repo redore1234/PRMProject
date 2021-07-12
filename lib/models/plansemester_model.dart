@@ -5,6 +5,7 @@ class PlanSemesterModel{
   String semesterId;
   String  createDate;
   bool isComplete;
+  
 
   PlanSemesterModel(this.planSemesterId, this.planSemesterName, this.studentId, this.semesterId,
       this.createDate, this.isComplete);

@@ -8,7 +8,7 @@ import 'package:project/provider/google_signin.dart';
 import 'package:project/screen/add_subject/add_subject.dart';
 import 'package:project/screen/search_subject/search_subject.dart';
 import 'package:project/screen/student/add_student.dart';
-import 'package:project/screen/update_subject/update_subject.dart';
+import 'package:project/screen/update_subject/subject_detail.dart';
 import 'package:project/services/login_service.dart';
 import 'package:project/services/major_service.dart';
 import 'package:project/services/subject_service.dart';

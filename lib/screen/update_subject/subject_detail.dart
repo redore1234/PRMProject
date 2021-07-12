@@ -2,31 +2,31 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:project/global/dropdown.dart';
 import 'package:project/models/subject_model.dart';
+import 'package:project/screen/topic/topic.dart';
 import 'package:project/services/subject_service.dart';
 import 'package:project/services/topic_service.dard.dart';
 import 'package:project/widget/base_ontap_widget.dart';
 import 'package:switcher/core/switcher_size.dart';
 import 'package:switcher/switcher.dart';
 
-class TopicPage extends StatefulWidget {
-  final int topicId;
+class UpdateSubjectPage extends StatefulWidget {
+  final String id;
   final int planSubjectId;
-
   final String bearerToken;
 
-  const TopicPage({Key key, @required this.topicId, this.planSubjectId, @required this.bearerToken}) : super(key: key);
+  const UpdateSubjectPage({Key key, @required this.id, this.planSubjectId, @required this.bearerToken}) : super(key: key);
 
-  _TopicPageState createState() => _TopicPageState(this.topicId, this.planSubjectId, this.bearerToken);
+  _UpdateSubjectPageState createState() => _UpdateSubjectPageState(this.id, this.planSubjectId, this.bearerToken);
 }
 
-class _TopicPageState extends State<TopicPage> {
+class _UpdateSubjectPageState extends State<UpdateSubjectPage> {
   DateTime selectedDate = DateTime.now();
-  final int topicId;
+  final String id;
   final int planSubjectId;
   final String bearerToken;
 
 
-  _TopicPageState(this.topicId, this.planSubjectId, this.bearerToken);
+  _UpdateSubjectPageState(this.id, this.planSubjectId, this.bearerToken);
 
   // Future<void> load() async {
   //   SubjectService.read(id: id).then((value) {
@@ -66,7 +66,7 @@ class _TopicPageState extends State<TopicPage> {
             onPressed: () => Navigator.of(context).pop(),
           ),
           title: Text(
-            "TOPIC".toUpperCase(),
+            "subject detail".toUpperCase(),
             style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
           ),
           centerTitle: true,
@@ -74,7 +74,7 @@ class _TopicPageState extends State<TopicPage> {
         ),
         body: Container(
           child: FutureBuilder(
-            future: TopicService.read(id: '$topicId', bearerToken: bearerToken),
+            future: SubjectService.read(id: id, bearerToken: bearerToken),
             builder: (BuildContext context, snapshot) {
               if (snapshot.hasData) {
                 print("subject detail: " + bearerToken);
@@ -85,50 +85,53 @@ class _TopicPageState extends State<TopicPage> {
                 return Container(
                   child: Column(
                     children: [
-                      Text(snapshot.data[0].topicName,
+                      Text(snapshot.data[0].id,
                           style:
                           TextStyle(fontSize: 25, fontWeight: FontWeight.bold)),
                       Text(
-                          snapshot.data[0].topicDescription,
-                          style: TextStyle(fontSize: 23, fontWeight: FontWeight.bold)),
-                      // Expanded(
-                      //   child: Container(
-                      //     color: Colors.green,
-                      //     child: FutureBuilder(
-                      //       future: TopicService.read(bearerToken: bearerToken),
-                      //       builder: (BuildContext context, snapshot) {
-                      //         if (snapshot.hasData) {
-                      //           print('hasdata');
-                      //
-                      //           return ListView.builder(
-                      //             itemCount: snapshot.data.length,
-                      //             itemBuilder: (context, index) {
-                      //               return Padding(
-                      //                 padding: const EdgeInsets.symmetric(
-                      //                     vertical: 10),
-                      //                 child: subjectCourse(
-                      //                   context,
-                      //                   snapshot.data[index].topicName,
-                      //                   snapshot.data[index].topicDescription,
-                      //                 ),
-                      //               );
-                      //             },
-                      //           );
-                      //         } else {
-                      //           return Center(
-                      //             child: CircularProgressIndicator(
-                      //               semanticsLabel: 'Loading...',
-                      //             ),
-                      //           );
-                      //         }
-                      //       },
-                      //     ),
-                      //
-                      //
-                      //
-                      //   ),
-                      //   flex: 12,
-                      // )
+                        snapshot.data[0].name,
+                        style: TextStyle(fontSize: 23, fontWeight: FontWeight.bold)),
+                      Expanded(
+                        child: Container(
+                          color: Colors.green,
+                          child: FutureBuilder(
+                            future: TopicService.read(bearerToken: bearerToken),
+                            builder: (BuildContext context, snapshot) {
+                              if (snapshot.hasData) {
+                                print('hasdata');
+
+                                return ListView.builder(
+                                  itemCount: snapshot.data.length,
+                                  itemBuilder: (context, index) {
+                                    return Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          vertical: 10),
+                                      child: subjectCourse(
+                                        context,
+                                        snapshot.data[index].topicName,
+                                        snapshot.data[index].topicDescription,
+                                        snapshot.data[index].topicId,
+                                        planSubjectId,
+                                        bearerToken,
+                                      ),
+                                    );
+                                  },
+                                );
+                              } else {
+                                return Center(
+                                  child: CircularProgressIndicator(
+                                    semanticsLabel: 'Loading...',
+                                  ),
+                                );
+                              }
+                            },
+                          ),
+
+
+
+                        ),
+                        flex: 12,
+                      )
 
 
                     ],
@@ -173,7 +176,7 @@ class _TopicPageState extends State<TopicPage> {
   }
 }
 Widget subjectCourse(BuildContext context, String subjectCode,
-    String subjectName) {
+    String subjectName, int topicId, int planSubjectId, String bearerToken) {
   return FlatButton(
       padding: EdgeInsets.all(20),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
@@ -181,12 +184,12 @@ Widget subjectCourse(BuildContext context, String subjectCode,
       onPressed: () {
         // Navigate to Update
 
-        // Navigator.push(
-        //   context,
-        //   MaterialPageRoute(
-        //     builder: (context) => UpdateSubjectPage(id: subjectCode, bearerToken: bearerToken,),
-        //   ),
-        // );
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => TopicPage(topicId: topicId, planSubjectId: planSubjectId, bearerToken: bearerToken,),
+          ),
+        );
         print("pressed");
       },
       child: Row(

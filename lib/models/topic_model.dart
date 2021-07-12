@@ -1,12 +1,12 @@
-class Topic{
+class TopicModel{
   int topicId;
   String topicName;
   String topicDescription;
   String subjectId;
 
-  Topic(this.topicId, this.topicName, this.topicDescription, this.subjectId);
+  TopicModel(this.topicId, this.topicName, this.topicDescription, this.subjectId);
 
-  Topic.fromJson(Map<String, dynamic> json){
+  TopicModel.fromJson(Map<String, dynamic> json){
     this.topicId = json['topicId'];
     this.topicName = json['topicName'];
     this.topicDescription = json['topicDescription'];
