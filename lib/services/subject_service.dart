@@ -6,10 +6,12 @@ import 'package:project/helpers/http_helpers.dart';
 import 'package:project/models/subject_model.dart';
 
 class SubjectService {
-  static Future<List<SubjectModel>> read({String searchValue, String id}) async {
+  static Future<List<SubjectModel>> read({String searchValue, String id, String bearerToken}) async {
     //get all
+    print("From subjectservice");
     if (searchValue == null && id == null) {
-      final response = await HttpHelper.get(SUBJECT_ENDPOINT);
+      final response = await HttpHelper.get(SUBJECT_ENDPOINT, bearerToken: bearerToken);
+      print(response.body);
       final data = jsonDecode(response.body) as List;
       List<SubjectModel> lst = [];
       data.forEach((element) {
@@ -19,11 +21,11 @@ class SubjectService {
     }
     // search by id
     else if (id != null && id!= "") {
-        final response = await HttpHelper.get(SUBJECT_ENDPOINT +"/"+ id);
+        final response = await HttpHelper.get(SUBJECT_ENDPOINT +"/"+ id, bearerToken: bearerToken);
         final data = SubjectModel.fromJson(jsonDecode(response.body));
         return [data];
     } else {
-      final response = await HttpHelper.get(SUBJECT_ENDPOINT + "?SubjectName=" + searchValue);
+      final response = await HttpHelper.get(SUBJECT_ENDPOINT + "?SubjectName=" + searchValue, bearerToken: bearerToken);
       final data = jsonDecode(response.body) as List;
       List<SubjectModel> lst = [];
       data.forEach((element) {
@@ -33,10 +35,14 @@ class SubjectService {
     }
 
   }
-
-  static Future<SubjectModel> insert(SubjectModel model) async {
+  // static Future <SubjectModel> getSubjectById({String subjectId, String id, String bearerToken}) async{
+  //   final response = await HttpHelper.get(SUBJECT_ENDPOINT +"/"+ id, bearerToken: bearerToken);
+  //   final data = SubjectModel.fromJson(jsonDecode(response.body));
+  //   return data;
+  // }
+  static Future<SubjectModel> insert(SubjectModel model, String bearerToken) async {
     print(model.id);
-    final response = await HttpHelper.post(SUBJECT_ENDPOINT, model.toJson());
+    final response = await HttpHelper.post(SUBJECT_ENDPOINT, model.toJson(), bearerToken: bearerToken);
     print('post');
     final data = SubjectModel.fromJson(jsonDecode(response.body));
     print(data.id);
