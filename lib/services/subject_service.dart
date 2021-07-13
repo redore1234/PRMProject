@@ -8,7 +8,6 @@ import 'package:project/models/subject_model.dart';
 class SubjectService {
   static Future<List<SubjectModel>> read({String searchValue, String id, String bearerToken}) async {
     //get all
-    print("From subjectservice");
     if (searchValue == null && id == null) {
       final response = await HttpHelper.get(SUBJECT_ENDPOINT, bearerToken: bearerToken);
       print(response.body);

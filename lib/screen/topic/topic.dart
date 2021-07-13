@@ -1,8 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:project/global/dropdown.dart';
+import 'package:project/models/plantopic_model.dart';
 import 'package:project/models/subject_model.dart';
+import 'package:project/screen/task/task_detail.dart';
+import 'package:project/services/plan_topic_service.dart';
 import 'package:project/services/subject_service.dart';
+import 'package:project/services/task_service.dart';
 import 'package:project/services/topic_service.dard.dart';
 import 'package:project/widget/base_ontap_widget.dart';
 import 'package:switcher/core/switcher_size.dart';
@@ -24,6 +28,7 @@ class _TopicPageState extends State<TopicPage> {
   final int topicId;
   final int planSubjectId;
   final String bearerToken;
+   int planTopicIc;
 
 
   _TopicPageState(this.topicId, this.planSubjectId, this.bearerToken);
@@ -91,6 +96,63 @@ class _TopicPageState extends State<TopicPage> {
                       Text(
                           snapshot.data[0].topicDescription,
                           style: TextStyle(fontSize: 23, fontWeight: FontWeight.bold)),
+                      Expanded(
+                        child: Container(
+                          color: Colors.grey,
+
+                          child:  FutureBuilder(
+                              future: PlanTopicService.read(planSubjectId: '$planSubjectId', topicId: '$topicId', bearerToken: bearerToken),
+                              builder: (BuildContext context, snapshot){
+                                if(snapshot.hasData){
+                                  print("has data:");
+                                  final data = snapshot.data as List<PlanTopicModel>;
+                                   planTopicIc = data.elementAt(0).planTopicId;
+                                   print("data: " + '$planTopicIc');
+
+
+                                }
+                                return Container(
+                                  child: FutureBuilder(
+                                    future: TaskService.read(planTopicId: '$planTopicIc', bearerToken: bearerToken),
+                                    builder: (BuildContext context, snapshot) {
+                                      if (snapshot.hasData) {
+                                        print("has data task");
+                                        return ListView.builder(
+                                          itemCount: snapshot.data.length,
+                                          itemBuilder: (context, index) {
+                                            return Padding(
+                                              padding: const EdgeInsets.symmetric(vertical: 10),
+                                              child: subjectCourse(
+                                                context,
+                                                snapshot.data[index].taskDescription,
+                                                snapshot.data[index].dueDate,
+                                                snapshot.data[index].effortTime,
+                                                snapshot.data[index].estimateTime,
+                                                snapshot.data[index].taskId,
+                                                bearerToken,
+                                              ),
+                                            );
+                                          },
+                                        );
+                                      } else {
+                                        print("hello");
+                                        return Center(
+                                          child: CircularProgressIndicator(
+                                            semanticsLabel: 'Loading...',
+                                          ),
+                                        );
+                                      }
+                                    },
+                                  ),
+                                );
+                              }
+                          ),
+
+
+
+                        ),
+                        flex: 12,
+                      ),
                       // Expanded(
                       //   child: Container(
                       //     color: Colors.green,
@@ -172,21 +234,20 @@ class _TopicPageState extends State<TopicPage> {
         style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20));
   }
 }
-Widget subjectCourse(BuildContext context, String subjectCode,
-    String subjectName) {
+Widget subjectCourse(BuildContext context, String description,
+    String dueDate, int effortTime, int estimateTime, int taskId, String bearerToken) {
   return FlatButton(
       padding: EdgeInsets.all(20),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
       color: Color(0xFFF5F6F9),
       onPressed: () {
-        // Navigate to Update
 
-        // Navigator.push(
-        //   context,
-        //   MaterialPageRoute(
-        //     builder: (context) => UpdateSubjectPage(id: subjectCode, bearerToken: bearerToken,),
-        //   ),
-        // );
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => TaskDetailPage(taskId: taskId, bearerToken: bearerToken,),
+          ),
+        );
         print("pressed");
       },
       child: Row(
@@ -194,13 +255,17 @@ Widget subjectCourse(BuildContext context, String subjectCode,
           Expanded(
             child: Column(
               children: [
-                Text(subjectCode,
+                Text(description,
                     style:
                     TextStyle(fontSize: 15, fontWeight: FontWeight.bold)),
                 Text(
-                  subjectName,
+                   dueDate,
                   style: TextStyle(fontWeight: FontWeight.bold),
                 ),
+                Text("Effort spent: " + '$effortTime' + "/" + '$estimateTime' + " hours",
+                    style:
+                    TextStyle(fontSize: 15, fontWeight: FontWeight.bold)),
+
 
 
               ],

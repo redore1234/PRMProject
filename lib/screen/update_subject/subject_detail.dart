@@ -9,24 +9,24 @@ import 'package:project/widget/base_ontap_widget.dart';
 import 'package:switcher/core/switcher_size.dart';
 import 'package:switcher/switcher.dart';
 
-class UpdateSubjectPage extends StatefulWidget {
+class SubjectDetailPage extends StatefulWidget {
   final String id;
   final int planSubjectId;
   final String bearerToken;
 
-  const UpdateSubjectPage({Key key, @required this.id, this.planSubjectId, @required this.bearerToken}) : super(key: key);
+  const SubjectDetailPage({Key key, @required this.id, this.planSubjectId, @required this.bearerToken}) : super(key: key);
 
-  _UpdateSubjectPageState createState() => _UpdateSubjectPageState(this.id, this.planSubjectId, this.bearerToken);
+  _SubjectDetailPageState createState() => _SubjectDetailPageState(this.id, this.planSubjectId, this.bearerToken);
 }
 
-class _UpdateSubjectPageState extends State<UpdateSubjectPage> {
+class _SubjectDetailPageState extends State<SubjectDetailPage> {
   DateTime selectedDate = DateTime.now();
   final String id;
   final int planSubjectId;
   final String bearerToken;
 
 
-  _UpdateSubjectPageState(this.id, this.planSubjectId, this.bearerToken);
+  _SubjectDetailPageState(this.id, this.planSubjectId, this.bearerToken);
 
   // Future<void> load() async {
   //   SubjectService.read(id: id).then((value) {
@@ -95,10 +95,10 @@ class _UpdateSubjectPageState extends State<UpdateSubjectPage> {
                         child: Container(
                           color: Colors.green,
                           child: FutureBuilder(
-                            future: TopicService.read(bearerToken: bearerToken),
+                            future: TopicService.read(subjectId: id,bearerToken: bearerToken),
                             builder: (BuildContext context, snapshot) {
                               if (snapshot.hasData) {
-                                print('hasdata');
+                                print('hasdata search subjectid');
 
                                 return ListView.builder(
                                   itemCount: snapshot.data.length,
@@ -187,7 +187,7 @@ Widget subjectCourse(BuildContext context, String subjectCode,
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => TopicPage(topicId: topicId, planSubjectId: planSubjectId, bearerToken: bearerToken,),
+            builder: (context) => TopicPage(topicId: topicId, planSubjectId: planSubjectId, bearerToken: bearerToken),
           ),
         );
         print("pressed");

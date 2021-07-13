@@ -167,6 +167,7 @@ class _SubjectPageState extends State<SubjectPage> {
                                             for (var i = 0; i < data.length; i++) {
                                               if(data[i].semesterId == semesterId){
                                                 planSemesterId = data[i].planSemesterId;
+                                                print(planSemesterId);
                                               }
                                             }
 
@@ -176,6 +177,7 @@ class _SubjectPageState extends State<SubjectPage> {
                                               future: PlanSubjectService.read(planSemesterId: planSemesterId, bearerToken: bearerToken),
                                               builder: (BuildContext context, snapshot) {
                                                 if (snapshot.hasData) {
+                                                  print("has data plansubject");
                                                   return ListView.builder(
                                                     itemCount: snapshot.data.length,
                                                     itemBuilder: (context, index) {
@@ -246,7 +248,7 @@ Widget subjectCourse(BuildContext context, String subjectCode,
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => UpdateSubjectPage(id: subjectCode,  planSubjectId: planSubjectId, bearerToken: bearerToken),
+            builder: (context) => SubjectDetailPage(id: subjectCode,  planSubjectId: planSubjectId, bearerToken: bearerToken),
           ),
         );
         print("pressed");

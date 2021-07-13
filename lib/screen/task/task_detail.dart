@@ -1,11 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:project/global/dropdown.dart';
 
-class AddTaskSubject extends StatefulWidget {
-  _AddTaskSubjectPageState createState() => _AddTaskSubjectPageState();
+class TaskDetailPage extends StatefulWidget {
+  final int taskId;
+  final String bearerToken;
+  const TaskDetailPage({Key key, this.taskId, @required this.bearerToken}) : super(key: key);
+
+  _TaskDetailPagePageState createState() => _TaskDetailPagePageState(this.taskId, this.bearerToken);
 }
 
-class _AddTaskSubjectPageState extends State<AddTaskSubject> {
+class _TaskDetailPagePageState extends State<TaskDetailPage> {
+  final int taskId;
+  final String bearerToken;
+  _TaskDetailPagePageState(this.taskId, this.bearerToken);
+
 
   DateTime selectedDate = DateTime.now();
   String estimateTime, description;

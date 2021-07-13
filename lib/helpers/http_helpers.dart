@@ -3,8 +3,8 @@ import 'dart:io';
 
 import 'package:http/http.dart' as http;
 
-const DOMAIN = 'https://a56c8715bb99.ngrok.io/api/v1';
-const DOMAIN_SEARCH_STUDENT = 'https://a56c8715bb99.ngrok.io/api/v1.1';
+const DOMAIN = 'https://02a35c24653f.ngrok.io/api/v1';
+const DOMAIN_SEARCH_STUDENT = 'https://02a35c24653f.ngrok.io/v1.1';
 const LOGIN_ENDPOINT = DOMAIN + '/auths/login-google';
 const SUBJECT_ENDPOINT = DOMAIN + '/subjects';
 const MAJOR_ENDPOINT = DOMAIN + '/majors';
@@ -14,6 +14,8 @@ const SEMESTER_ENPOINT = DOMAIN + '/semesters';
 const SEARCH_STUDENT_ENPOINT = DOMAIN_SEARCH_STUDENT + 'students';
 const PLANSUBJECT_ENPOINT = DOMAIN + '/plan-subjects';
 const TOPIC_ENPOINT = DOMAIN + '/topic';
+const PLANTOPIC_ENPOINT = DOMAIN + '/plan-topics';
+const TASK_ENPOINT = DOMAIN + '/tasks';
 
 
 

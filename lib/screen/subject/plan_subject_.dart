@@ -102,7 +102,7 @@ Widget subjectCourse(BuildContext context, String subjectCode,
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => UpdateSubjectPage(id: subjectCode),
+            builder: (context) => SubjectDetailPage(id: subjectCode),
           ),
         );
         print("pressed");

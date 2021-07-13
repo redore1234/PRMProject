@@ -1,21 +1,21 @@
 class TaskModel{
   int taskId;
-  String taskDecription;
-  DateTime createDate;
-  double estimateTime;
-  double effortTime;
-  DateTime dueDate;
+  String taskDescription;
+  String createDate;
+  int estimateTime;
+  int effortTime;
+  String dueDate;
   int priority;
-  int isComplete;
+  bool isComplete;
   int planTopicId;
   int taskCategoryId;
 
-  TaskModel(this.taskId, this.taskDecription, this.createDate, this.estimateTime, this.effortTime, this.dueDate, this.priority, this.isComplete
+  TaskModel(this.taskId, this.taskDescription, this.createDate, this.estimateTime, this.effortTime, this.dueDate, this.priority, this.isComplete
       ,this.planTopicId, this.taskCategoryId);
 
   TaskModel.fromJson(Map<String, dynamic> json){
     this.taskId = json['taskId'];
-    this.taskDecription = json['taskDecription'];
+    this.taskDescription = json['taskDescription'];
     this.createDate = json['createDate'];
     this.estimateTime = json['estimateTime'];
     this.effortTime = json['effortTime'];
@@ -29,7 +29,7 @@ class TaskModel{
   Map<String, dynamic> toJson(){
     Map<String, dynamic> data = new Map<String, dynamic>();
     data['taskId'] = this.taskId;
-    data['taskDecription'] = this.taskDecription;
+    data['taskDescription'] = this.taskDescription;
     data['createDate'] = this.createDate;
     data['estimateTime'] = this.estimateTime;
     data['effortTime'] = this.effortTime;

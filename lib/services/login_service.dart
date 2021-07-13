@@ -5,7 +5,6 @@ import 'package:project/models/login_models.dart';
 import 'package:project/provider/google_signin.dart';
 
 class LoginService{
-
   static Future<LoginModel> getToken() async {
     final String provider = Authentication.provider;
     final String token = Authentication.token;
@@ -13,7 +12,7 @@ class LoginService{
 
     final response = await HttpHelper.post(LOGIN_ENDPOINT, model.toJson());
     final data = LoginModel.fromJson(jsonDecode(response.body));
-    print("Token: " + data.message);
+    print("Token from api return: " + data.message);
     return data;
   }
 
