@@ -129,7 +129,6 @@ class _SubjectPageState extends State<SubjectPage> {
                                           dropdownValue = value ;
                                           semesterId = data.elementAt(index).semesterId;
                                           // changeList();
-                                          print(planSemesterId);
                                         });
                                       },
                                       items: lstName.map<DropdownMenuItem<String>>((String value) {

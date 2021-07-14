@@ -15,11 +15,16 @@ class TaskDetailPage extends StatefulWidget {
 
 class _TaskDetailPagePageState extends State<TaskDetailPage> {
   final int taskId;
+  int index = 0;
   final String bearerToken;
   final descriptionController = TextEditingController();
-  final List<String> list = ["Not Urgent", "Urgent"];
-  String priority;
-  final dueDateController = TextEditingController();
+  final estimatedTimeController = TextEditingController();
+  final effortTimeController = TextEditingController();
+  final List<String> listPriority = ["Not Urgent", "Urgent"];
+  final List<String> listStatus = ["Ongoing", "Finish"];
+  final List<String> listTaskCategory = ["Assignment", "Quiz", "Project", "Self-Study"];
+  String priority, category, statusString;
+  bool status;
   DateTime dueDate;
 
 
@@ -27,19 +32,21 @@ class _TaskDetailPagePageState extends State<TaskDetailPage> {
   void dispose() {
     // Clean up the controller when the widget is disposed.
     descriptionController.dispose();
+    estimatedTimeController.dispose();
+    effortTimeController.dispose();
     super.dispose();
   }
 
   _TaskDetailPagePageState(this.taskId, this.bearerToken);
 
   DateTime selectedDate = DateTime.now();
-  String estimateTime, description;
+  String description;
 
   Future<void> _selectDate(BuildContext context) async {
     final DateTime picked = await showDatePicker(
         context: context,
         initialDate: dueDate,
-        firstDate: DateTime(2015, 8),
+        firstDate: selectedDate,
         lastDate: DateTime(2101));
     if (picked != null && picked != dueDate) {
       setState(() {
@@ -75,8 +82,13 @@ class _TaskDetailPagePageState extends State<TaskDetailPage> {
           if (snapshot.hasData) {
             print("has data task id: ");
             dueDate = DateTime.parse(snapshot.data[0].dueDate);
-            priority = list[snapshot.data[0].priority];
+            priority = listPriority[snapshot.data[0].priority];
+            category = listTaskCategory[snapshot.data[0].taskCategoryId];
+            status = snapshot.data[0].isComplete;
+            statusString = (status == true) ? "Finished" : "Ongoing";
             descriptionController.text = snapshot.data[0].taskDescription;
+            estimatedTimeController.text = snapshot.data[0].estimateTime;
+            effortTimeController.text = snapshot.data[0].effortTime;
             return SingleChildScrollView(
               child: Form(
                 key: _formKey,
@@ -124,9 +136,29 @@ class _TaskDetailPagePageState extends State<TaskDetailPage> {
                         SizedBox(
                           width: 110,
                         ),
-                        DropDown(
-                            arrayList: ['PRM391', 'SWD392'],
-                            valueSelected: 'PRM391')
+                        DropdownButton<String>(
+                          value: category,
+                          icon: Icon(Icons.arrow_drop_down),
+                          iconSize: 24,
+                          elevation: 16,
+                          style: TextStyle(color: Colors.red, fontSize: 18),
+                          underline: Container(
+                            height: 2,
+                            color: Colors.deepPurpleAccent,
+                          ),
+                          onChanged: (String value) {
+                            setState(() {
+                              category = value;
+                              // changeList();
+                            });
+                          },
+                          items: listTaskCategory.map<DropdownMenuItem<String>>((String value) {
+                            return DropdownMenuItem<String>(
+                              value: value,
+                              child: Text(value),
+                            );
+                          }).toList(),
+                        ),
                       ],
                     ),
                     SizedBox(
@@ -141,9 +173,32 @@ class _TaskDetailPagePageState extends State<TaskDetailPage> {
                         SizedBox(
                           width: 125,
                         ),
-                        DropDown(
-                            arrayList: ['Urgent', 'Not Urgent'],
-                            valueSelected: priority)
+                        // DropDown(
+                        //     arrayList: ['Urgent', 'Not Urgent'],
+                        //     valueSelected: priority)
+                        DropdownButton<String>(
+                          value: priority,
+                          icon: Icon(Icons.arrow_drop_down),
+                          iconSize: 24,
+                          elevation: 16,
+                          style: TextStyle(color: Colors.red, fontSize: 18),
+                          underline: Container(
+                            height: 2,
+                            color: Colors.deepPurpleAccent,
+                          ),
+                          onChanged: (String value) {
+                            setState(() {
+                              priority = value;
+                              // changeList();
+                            });
+                          },
+                          items: listPriority.map<DropdownMenuItem<String>>((String value) {
+                            return DropdownMenuItem<String>(
+                              value: value,
+                              child: Text(value),
+                            );
+                          }).toList(),
+                        ),
                       ],
                     ),
                     SizedBox(
@@ -191,16 +246,10 @@ class _TaskDetailPagePageState extends State<TaskDetailPage> {
                         SizedBox(
                           width: 50,
                           child: TextFormField(
-                            // validator: (String value) {
-                            //   if (value.isEmpty) {
-                            //     return "Field is not empty";
-                            //   }
-                            //   return null;
-                            // },
-
+                            controller: estimatedTimeController,
                             decoration: InputDecoration(),
                             onChanged: (text) {
-                              estimateTime = text;
+                              estimatedTimeController.text = text;
                             },
                           ),
                         ),
@@ -208,7 +257,7 @@ class _TaskDetailPagePageState extends State<TaskDetailPage> {
                           width: 15,
                         ),
                         Text(
-                          'times',
+                          'hours',
                           style: TextStyle(fontSize: 20),
                         )
                       ],
@@ -216,25 +265,110 @@ class _TaskDetailPagePageState extends State<TaskDetailPage> {
                     SizedBox(
                       height: 30,
                     ),
-
+                    Row(
+                      children: [
+                        SizedBox(
+                          width: 20,
+                        ),
+                        _labelTitle('Effort Time'),
+                        SizedBox(
+                          width: 50,
+                        ),
+                        SizedBox(
+                          width: 50,
+                          child: TextFormField(
+                            controller: effortTimeController,
+                            decoration: InputDecoration(),
+                            onChanged: (text) {
+                              effortTimeController.text = text;
+                            },
+                          ),
+                        ),
+                        SizedBox(
+                          width: 15,
+                        ),
+                        Text(
+                          'hours',
+                          style: TextStyle(fontSize: 20),
+                        )
+                      ],
+                    ),
+                    SizedBox(
+                      height: 30,
+                    ),
+                    Row(
+                      children: [
+                        SizedBox(
+                          width: 20,
+                        ),
+                        _labelTitle('Status'),
+                        SizedBox(
+                          width: 125,
+                        ),
+                        // DropDown(
+                        //     arrayList: ['Ongoing', 'Finished'],
+                        //     valueSelected: status)
+                        DropdownButton<String>(
+                          value: statusString,
+                          icon: Icon(Icons.arrow_drop_down),
+                          iconSize: 24,
+                          elevation: 16,
+                          style: TextStyle(color: Colors.red, fontSize: 18),
+                          underline: Container(
+                            height: 2,
+                            color: Colors.deepPurpleAccent,
+                          ),
+                          onChanged: (String value) {
+                            setState(() {
+                              statusString = value;
+                              status = (statusString == "Finished");
+                              // changeList();
+                            });
+                          },
+                          items: ["Ongoing", "Finished"].map<DropdownMenuItem<String>>((String value) {
+                            return DropdownMenuItem<String>(
+                              value: value,
+                              child: Text(value),
+                            );
+                          }).toList(),
+                        ),
+                      ],
+                    ),
                     SizedBox(
                       height: 30,
                     ),
                     Container(
                       width: size.width * 0.8,
                       alignment: Alignment.center,
-                      child: FlatButton(
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(30.0)),
-                        padding:
+                      child: Row (
+                        children: [
+                          FlatButton(
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(30.0)),
+                            padding:
                             EdgeInsets.symmetric(vertical: 20, horizontal: 40),
-                        color: Colors.orangeAccent,
-                        onPressed: () {},
-                        child: Text(
-                          'UPDATE',
-                          style: TextStyle(
-                              color: Colors.white, fontWeight: FontWeight.bold),
-                        ),
+                            color: Colors.orangeAccent,
+                            onPressed: () {},
+                            child: Text(
+                              'UPDATE',
+                              style: TextStyle(
+                                  color: Colors.white, fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                          FlatButton(
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(30.0)),
+                            padding:
+                            EdgeInsets.symmetric(vertical: 20, horizontal: 40),
+                            color: Colors.orangeAccent,
+                            onPressed: () {},
+                            child: Text(
+                              'DELETE',
+                              style: TextStyle(
+                                  color: Colors.white, fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   ],
