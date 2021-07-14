@@ -3,8 +3,8 @@ import 'dart:io';
 
 import 'package:http/http.dart' as http;
 
-const DOMAIN = 'https://16aef6071a14.ngrok.io/api/v1';
-const DOMAIN_SEARCH_STUDENT = 'https://16aef6071a14.ngrok.io/v1.1';
+const DOMAIN = 'https://422b5004d6e8.ngrok.io/api/v1';
+const DOMAIN_SEARCH_STUDENT = 'https://422b5004d6e8.ngrok.io/v1.1';
 const LOGIN_ENDPOINT = DOMAIN + '/auths/login-google';
 const SUBJECT_ENDPOINT = DOMAIN + '/subjects';
 const MAJOR_ENDPOINT = DOMAIN + '/majors';

@@ -39,17 +39,19 @@ class TaskService{
       return lst;
     }
   }
-  static Future<TopicModel> insert(TopicModel topic, String bearerToken) async {
-    print(topic.topicId);
-    final response = await HttpHelper.post(TOPIC_ENPOINT, topic.toJson(), bearerToken: bearerToken);
+  static Future<TaskModel> insert(TaskModel taskModel, String bearerToken) async {
+    final response = await HttpHelper.post(TASK_ENPOINT, taskModel.toJson(), bearerToken: bearerToken);
     print('post student');
-    final data = TopicModel.fromJson(jsonDecode(response.body));
-    print(data.topicId);
+    final data = TaskModel.fromJson(jsonDecode(response.body));
     return data;
   }
-  static Future <TopicModel> getTopicById({String subjectId, String id, String bearerToken}) async{
-    final response = await HttpHelper.get(TOPIC_ENPOINT +"/"+ id, bearerToken: bearerToken);
-    final data = TopicModel.fromJson(jsonDecode(response.body));
-    return data;
+  static Future<TaskModel> update(TaskModel taskModel) async {
+    // final response = await HttpHelper.put(SUBJECT_ENDPOINT, model.toJson());
+    // print(response.body);
+    // print(response.headers);
+    // final data = TaskModel.fromJson(jsonDecode(response.body));
+    // final data = await read(id: taskModel.taskId);
+    // return data[0];
   }
+  
 }

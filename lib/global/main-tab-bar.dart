@@ -12,16 +12,14 @@ final GlobalKey<NavigatorState> thirdTabNavKey = GlobalKey<NavigatorState>();
 final GlobalKey<NavigatorState> forthTabNavKey = GlobalKey<NavigatorState>();
 
 class MainTabBar extends StatefulWidget {
-  final String studentID;
 
-  const MainTabBar({Key key, @required this.studentID})
-      : super(key: key);
+  // const MainTabBar({Key key, @required this.studentID})
+  //     : super(key: key);
   _MainTabBarState createState() =>
-      _MainTabBarState(this.studentID);
+      _MainTabBarState();
 }
 class _MainTabBarState extends State<MainTabBar> {
-  final String studentID;
-  _MainTabBarState(this.studentID);
+  _MainTabBarState();
   @override
   Widget build(BuildContext context) {
     return CupertinoTabScaffold(

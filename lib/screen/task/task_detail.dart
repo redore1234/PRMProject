@@ -17,17 +17,28 @@ class _TaskDetailPagePageState extends State<TaskDetailPage> {
   final int taskId;
   int index = 0;
   final String bearerToken;
-  final descriptionController = TextEditingController();
+  var descriptionController = TextEditingController();
+
   final estimatedTimeController = TextEditingController();
   final effortTimeController = TextEditingController();
   final List<String> listPriority = ["Not Urgent", "Urgent"];
-  final List<String> listStatus = ["Ongoing", "Finish"];
-  final List<String> listTaskCategory = ["Assignment", "Quiz", "Project", "Self-Study"];
+  final List<String> listStatus = ["Ongoing", "Finished"];
+  final List<String> listTaskCategory = [
+    "Assignment",
+    "Quiz",
+    "Project",
+    "Self-Study"
+  ];
   String priority, category, statusString;
   bool status;
   DateTime dueDate;
 
+  void initState() {
+    super.initState();
 
+    // Start listening to changes.
+    // descriptionController.addListener(_printLatestValue);
+  }
 
   void dispose() {
     // Clean up the controller when the widget is disposed.
@@ -35,6 +46,17 @@ class _TaskDetailPagePageState extends State<TaskDetailPage> {
     estimatedTimeController.dispose();
     effortTimeController.dispose();
     super.dispose();
+  }
+
+  void getData() {
+    print(descriptionController.text);
+    print(category);
+    print(priority);
+    print(dueDate);
+    print(effortTimeController.text);
+    print(estimatedTimeController.text);
+
+
   }
 
   _TaskDetailPagePageState(this.taskId, this.bearerToken);
@@ -55,9 +77,10 @@ class _TaskDetailPagePageState extends State<TaskDetailPage> {
     }
   }
 
+  static final _formKey = GlobalKey<FormState>();
+
   @override
   Widget build(BuildContext context) {
-    final _formKey = GlobalKey<FormState>();
     Size size = MediaQuery.of(context).size;
 
     return SafeArea(
@@ -83,19 +106,20 @@ class _TaskDetailPagePageState extends State<TaskDetailPage> {
             print("has data task id: ");
             dueDate = DateTime.parse(snapshot.data[0].dueDate);
             priority = listPriority[snapshot.data[0].priority];
-            category = listTaskCategory[snapshot.data[0].taskCategoryId];
+            category = listTaskCategory[snapshot.data[0].taskCategoryId - 1];
             status = snapshot.data[0].isComplete;
             statusString = (status == true) ? "Finished" : "Ongoing";
-            descriptionController.text = snapshot.data[0].taskDescription;
-            estimatedTimeController.text = snapshot.data[0].estimateTime;
-            effortTimeController.text = snapshot.data[0].effortTime;
+            // descriptionController.value = descriptionController.value.copyWith(text: snapshot.data[0].taskDescription);
+            estimatedTimeController.value = estimatedTimeController.value
+                .copyWith(text: '${snapshot.data[0].estimateTime}');
+            effortTimeController.value = effortTimeController.value
+                .copyWith(text: '${snapshot.data[0].effortTime}');
             return SingleChildScrollView(
               child: Form(
                 key: _formKey,
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-
                     SizedBox(
                       height: 30,
                     ),
@@ -114,19 +138,15 @@ class _TaskDetailPagePageState extends State<TaskDetailPage> {
                     SizedBox(height: 20),
                     Container(
                         child: SizedBox(
-                          width: 350,
-                          child: TextFormField(
-                            controller: descriptionController,
-                            onChanged: (text) {
-                              //description = text;
-
-                            },
-                            maxLines: 5,
-                            decoration: InputDecoration(
-                                border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(5))),
-                          ),
-                        )),
+                      width: 350,
+                      child: TextFormField(
+                        initialValue: snapshot.data[0].taskDescription,
+                        maxLines: 5,
+                        decoration: InputDecoration(
+                            border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(5))),
+                      ),
+                    )),
                     Row(
                       children: [
                         SizedBox(
@@ -152,7 +172,8 @@ class _TaskDetailPagePageState extends State<TaskDetailPage> {
                               // changeList();
                             });
                           },
-                          items: listTaskCategory.map<DropdownMenuItem<String>>((String value) {
+                          items: listTaskCategory
+                              .map<DropdownMenuItem<String>>((String value) {
                             return DropdownMenuItem<String>(
                               value: value,
                               child: Text(value),
@@ -192,7 +213,8 @@ class _TaskDetailPagePageState extends State<TaskDetailPage> {
                               // changeList();
                             });
                           },
-                          items: listPriority.map<DropdownMenuItem<String>>((String value) {
+                          items: listPriority
+                              .map<DropdownMenuItem<String>>((String value) {
                             return DropdownMenuItem<String>(
                               value: value,
                               child: Text(value),
@@ -222,8 +244,7 @@ class _TaskDetailPagePageState extends State<TaskDetailPage> {
                               border: InputBorder.none,
                             ),
                             controller: TextEditingController(
-                                text:
-                                    '${dueDate.toLocal()}'.split(' ')[0]),
+                                text: '${dueDate.toLocal()}'.split(' ')[0]),
                             onTap: () {
                               _selectDate(context);
                             },
@@ -246,11 +267,9 @@ class _TaskDetailPagePageState extends State<TaskDetailPage> {
                         SizedBox(
                           width: 50,
                           child: TextFormField(
+                            keyboardType: TextInputType.number,
                             controller: estimatedTimeController,
                             decoration: InputDecoration(),
-                            onChanged: (text) {
-                              estimatedTimeController.text = text;
-                            },
                           ),
                         ),
                         SizedBox(
@@ -277,11 +296,9 @@ class _TaskDetailPagePageState extends State<TaskDetailPage> {
                         SizedBox(
                           width: 50,
                           child: TextFormField(
+                            keyboardType: TextInputType.number,
                             controller: effortTimeController,
                             decoration: InputDecoration(),
-                            onChanged: (text) {
-                              effortTimeController.text = text;
-                            },
                           ),
                         ),
                         SizedBox(
@@ -325,7 +342,8 @@ class _TaskDetailPagePageState extends State<TaskDetailPage> {
                               // changeList();
                             });
                           },
-                          items: ["Ongoing", "Finished"].map<DropdownMenuItem<String>>((String value) {
+                          items: ["Ongoing", "Finished"]
+                              .map<DropdownMenuItem<String>>((String value) {
                             return DropdownMenuItem<String>(
                               value: value,
                               child: Text(value),
@@ -340,32 +358,36 @@ class _TaskDetailPagePageState extends State<TaskDetailPage> {
                     Container(
                       width: size.width * 0.8,
                       alignment: Alignment.center,
-                      child: Row (
+                      child: Row(
                         children: [
                           FlatButton(
                             shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(30.0)),
-                            padding:
-                            EdgeInsets.symmetric(vertical: 20, horizontal: 40),
+                            padding: EdgeInsets.symmetric(
+                                vertical: 20, horizontal: 40),
                             color: Colors.orangeAccent,
-                            onPressed: () {},
+                            onPressed: () {
+                              getData();
+                            },
                             child: Text(
                               'UPDATE',
                               style: TextStyle(
-                                  color: Colors.white, fontWeight: FontWeight.bold),
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold),
                             ),
                           ),
                           FlatButton(
                             shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(30.0)),
-                            padding:
-                            EdgeInsets.symmetric(vertical: 20, horizontal: 40),
+                            padding: EdgeInsets.symmetric(
+                                vertical: 20, horizontal: 40),
                             color: Colors.orangeAccent,
                             onPressed: () {},
                             child: Text(
                               'DELETE',
                               style: TextStyle(
-                                  color: Colors.white, fontWeight: FontWeight.bold),
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold),
                             ),
                           ),
                         ],
