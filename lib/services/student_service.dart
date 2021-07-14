@@ -7,12 +7,12 @@ class StudentService{
   
   static Future<StudentModel> read({String email, String bearerToken}) async{
     final response = await HttpHelper.get(SEARCH_STUDENT_ENPOINT +"/"+ email, bearerToken: bearerToken);
-    final data = jsonDecode(response.body) as StudentModel;
-    return data;
+    if(response.statusCode == 200){
+      final data = jsonDecode(response.body) as StudentModel;
+      return data;
+    }else{
+      throw Exception('Failed to get Student by email');
+    }
   }
-  static Future<StudentModel> insert(StudentModel student, String bearerToken) async {
-    final response = await HttpHelper.post(SUBJECT_ENDPOINT, student.toJson(), bearerToken: bearerToken);
-    final data = StudentModel.fromJson(jsonDecode(response.body));
-    return data;
-  }
+
 }

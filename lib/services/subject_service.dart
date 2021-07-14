@@ -6,62 +6,79 @@ import 'package:project/helpers/http_helpers.dart';
 import 'package:project/models/subject_model.dart';
 
 class SubjectService {
-  static Future<List<SubjectModel>> read({String searchValue, String id, String bearerToken}) async {
+  static Future<List<SubjectModel>> read(
+      {String searchValue, String id, String bearerToken}) async {
     //get all
     if (searchValue == null && id == null) {
-      final response = await HttpHelper.get(SUBJECT_ENDPOINT, bearerToken: bearerToken);
-      print(response.body);
-      final data = jsonDecode(response.body) as List;
-      List<SubjectModel> lst = [];
-      data.forEach((element) {
-        lst.add(new SubjectModel.fromJson(element));
-      });
-      return lst;
+      final response =
+          await HttpHelper.get(SUBJECT_ENDPOINT, bearerToken: bearerToken);
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body) as List;
+        List<SubjectModel> lst = [];
+        data.forEach((element) {
+          lst.add(new SubjectModel.fromJson(element));
+        });
+        return lst;
+      } else {
+        throw Exception('Failed to get all subject');
+      }
     }
     // search by id
-    else if (id != null && id!= "") {
-        final response = await HttpHelper.get(SUBJECT_ENDPOINT +"/"+ id, bearerToken: bearerToken);
+    else if (id != null && id != "") {
+      final response = await HttpHelper.get(SUBJECT_ENDPOINT + "/" + id,
+          bearerToken: bearerToken);
+      if (response.statusCode == 200) {
         final data = SubjectModel.fromJson(jsonDecode(response.body));
         return [data];
+      } else {
+        throw Exception('Failed to search by id ');
+      }
     } else {
-      final response = await HttpHelper.get(SUBJECT_ENDPOINT + "?SubjectName=" + searchValue, bearerToken: bearerToken);
-      final data = jsonDecode(response.body) as List;
-      List<SubjectModel> lst = [];
-      data.forEach((element) {
-        lst.add(new SubjectModel.fromJson(element));
-      });
-      return lst;
+      final response = await HttpHelper.get(
+          SUBJECT_ENDPOINT + "?SubjectName=" + searchValue,
+          bearerToken: bearerToken);
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body) as List;
+        List<SubjectModel> lst = [];
+        data.forEach((element) {
+          lst.add(new SubjectModel.fromJson(element));
+        });
+        return lst;
+      } else {
+        throw Exception('Failed to search by subujectName ');
+      }
     }
-
-  }
-  // static Future <SubjectModel> getSubjectById({String subjectId, String id, String bearerToken}) async{
-  //   final response = await HttpHelper.get(SUBJECT_ENDPOINT +"/"+ id, bearerToken: bearerToken);
-  //   final data = SubjectModel.fromJson(jsonDecode(response.body));
-  //   return data;
-  // }
-  static Future<SubjectModel> insert(SubjectModel model, String bearerToken) async {
-    print(model.id);
-    final response = await HttpHelper.post(SUBJECT_ENDPOINT, model.toJson(), bearerToken: bearerToken);
-    print('post');
-    final data = SubjectModel.fromJson(jsonDecode(response.body));
-    print(data.id);
-    return data;
   }
 
-  static Future<String> delete(String id) async {
+  static Future<SubjectModel> insert(
+      SubjectModel model, String bearerToken) async {
+    final response = await HttpHelper.post(SUBJECT_ENDPOINT, model.toJson(),
+        bearerToken: bearerToken);
+    if (response.statusCode == 201) {
+      final data = SubjectModel.fromJson(jsonDecode(response.body));
+      return data;
+    } else {
+      throw Exception('Failed to insert subject');
+    }
+  }
+
+  static Future<String> delete(String id, String bearerToken) async {
     final response = await HttpHelper.post(SUBJECT_ENDPOINT, {"id": id});
-    final data = jsonDecode(response.body) as String;
-    return data;
+    if (response.statusCode == 201) {
+      final data = jsonDecode(response.body) as String;
+      return data;
+    } else {
+      throw Exception('Failed to delete subject by id');
+    }
   }
 
-  static Future<SubjectModel> update(SubjectModel model) async {
+  static Future<SubjectModel> update(SubjectModel model, String bearerToken) async {
     print(model.id);
-    // final response = await HttpHelper.put(SUBJECT_ENDPOINT, model.toJson());
-    // print(response.body);
-    // print(response.headers);
-    // final data = SubjectModel.fromJson(jsonDecode(response.body));
-    final data = await read(id: model.id);
-    return data[0];
+    final response = await HttpHelper.put(SUBJECT_ENDPOINT, model.toJson());
+    print(response.body);
+    print(response.headers);
+    final data = SubjectModel.fromJson(jsonDecode(response.body));
+    final updateSubject = await read(id: model.id, bearerToken: bearerToken);
+    return updateSubject[0];
   }
 }
-

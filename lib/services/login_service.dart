@@ -11,9 +11,12 @@ class LoginService{
     LoginModel model = new LoginModel(provider: provider, idToken: token);
 
     final response = await HttpHelper.post(LOGIN_ENDPOINT, model.toJson());
-    final data = LoginModel.fromJson(jsonDecode(response.body));
-    print("Token from api return: " + data.message);
-    return data;
+    if(response.statusCode == 200){
+      final data = LoginModel.fromJson(jsonDecode(response.body));
+      print("Token from api return: " + data.message);
+      return data;
+    }else{
+      throw Exception('Login Failed');
+    }
   }
-
 }

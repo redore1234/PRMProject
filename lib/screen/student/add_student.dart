@@ -137,7 +137,7 @@ class _AddStudentPageState extends State<AddStudentPage> {
                                 if (_formKey.currentState.validate()) {
                                   StudentModel studentModel =
                                   new StudentModel(id, name, email, majorID);
-                                  StudentService.insert(studentModel, bearerTokent);
+                                  // StudentService.insert(studentModel, bearerTokent: bearerTokent);
                                 }
                               },
                               child: Container(

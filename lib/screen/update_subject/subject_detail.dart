@@ -77,11 +77,6 @@ class _SubjectDetailPageState extends State<SubjectDetailPage> {
             future: SubjectService.read(id: id, bearerToken: bearerToken),
             builder: (BuildContext context, snapshot) {
               if (snapshot.hasData) {
-                print("subject detail: " + bearerToken);
-
-
-                print('hasdata111111');
-
                 return Container(
                   child: Column(
                     children: [
@@ -98,8 +93,6 @@ class _SubjectDetailPageState extends State<SubjectDetailPage> {
                             future: TopicService.read(subjectId: id,bearerToken: bearerToken),
                             builder: (BuildContext context, snapshot) {
                               if (snapshot.hasData) {
-                                print('hasdata search subjectid');
-
                                 return ListView.builder(
                                   itemCount: snapshot.data.length,
                                   itemBuilder: (context, index) {

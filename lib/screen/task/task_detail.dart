@@ -382,7 +382,10 @@ class _TaskDetailPagePageState extends State<TaskDetailPage> {
                             padding: EdgeInsets.symmetric(
                                 vertical: 20, horizontal: 40),
                             color: Colors.orangeAccent,
-                            onPressed: () {},
+                            onPressed: () {
+
+
+                            },
                             child: Text(
                               'DELETE',
                               style: TextStyle(
