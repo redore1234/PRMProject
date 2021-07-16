@@ -78,7 +78,7 @@ class _TopicPageState extends State<TopicPage> {
         ),
         body: Container(
           child: FutureBuilder(
-            future: TopicService.read(id: '$topicId', JWTToken: AuthService.jwtToken),
+            future: TopicService.read(topicId: '$topicId', JWTToken: AuthService.jwtToken),
             builder: (BuildContext context, snapshot) {
               if (snapshot.hasData) {
 

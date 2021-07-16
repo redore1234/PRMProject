@@ -7,9 +7,9 @@ import 'package:project/models/subject_model.dart';
 
 class SubjectService {
   static Future<List<SubjectModel>> read(
-      {String searchValue, String id, String JWTToken}) async {
+      {String searchValue, String subjectId, String JWTToken}) async {
     //get all
-    if (searchValue == null && id == null) {
+    if (searchValue == null && subjectId == null) {
       final response =
           await HttpHelper.get(SUBJECT_ENDPOINT, bearerToken: JWTToken);
       if (response.statusCode == 200) {
@@ -24,8 +24,8 @@ class SubjectService {
       }
     }
     // search by id
-    else if (id != null && id != "") {
-      final response = await HttpHelper.get(SUBJECT_ENDPOINT + "/" + id,
+    else if (subjectId != null && subjectId != "") {
+      final response = await HttpHelper.get(SUBJECT_ENDPOINT + "/" + subjectId,
           bearerToken: JWTToken);
       if (response.statusCode == 200) {
         final data = SubjectModel.fromJson(jsonDecode(response.body));
@@ -78,7 +78,7 @@ class SubjectService {
     print(response.body);
     print(response.headers);
     final data = SubjectModel.fromJson(jsonDecode(response.body));
-    final updateSubject = await read(id: model.id, JWTToken: JWTToken);
+    final updateSubject = await read(subjectId: model.id, JWTToken: JWTToken);
     return updateSubject[0];
   }
 }

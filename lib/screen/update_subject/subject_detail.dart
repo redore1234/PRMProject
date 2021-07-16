@@ -78,7 +78,7 @@ class _SubjectDetailPageState extends State<SubjectDetailPage> {
             Expanded(
               child: FutureBuilder(
                 future:
-                    SubjectService.read(id: id, JWTToken: AuthService.jwtToken),
+                    SubjectService.read(subjectId: id, JWTToken: AuthService.jwtToken),
                 builder: (BuildContext context, snapshot) {
                   if (snapshot.hasData) {
                     return Container(
@@ -129,10 +129,19 @@ class _SubjectDetailPageState extends State<SubjectDetailPage> {
                         },
                       );
                     } else {
+
                       return Center(
-                        child: CircularProgressIndicator(
-                          semanticsLabel: 'Loading...',
+                        child: Text(
+
+                            "No data",
+                            style: TextStyle(fontWeight: FontWeight.bold),
+
                         ),
+
+
+                        // child: CircularProgressIndicator(
+                        //   semanticsLabel: 'Loading...',
+                        // ),
                       );
                     }
                   },

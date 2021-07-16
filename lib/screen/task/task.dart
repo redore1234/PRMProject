@@ -1,5 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:project/global/dropdown.dart';
+import 'package:project/models/plansubject_model.dart';
+import 'package:project/models/topic_model.dart';
+import 'package:project/services/auth_service.dart';
+import 'package:project/services/plan_semester_service.dart';
+import 'package:project/services/plan_subject_service.dart';
+import 'package:project/services/topic_service.dard.dart';
 
 class AddTaskSubject extends StatefulWidget {
   _AddTaskSubjectPageState createState() => _AddTaskSubjectPageState();
@@ -8,7 +14,13 @@ class AddTaskSubject extends StatefulWidget {
 class _AddTaskSubjectPageState extends State<AddTaskSubject> {
 
   DateTime selectedDate = DateTime.now();
-  String estimateTime, description;
+  String estimateTime, description, subjectId, topicName;
+  List<PlanSubjectModel> listPlanSubject;
+  List<TopicModel> listTopic;
+  int topicId;
+  List<String> listSubjectId = new List<String>();
+  List<String> listTopicName = new List<String>();
+
 
   Future<void> _selectDate(BuildContext context) async {
     final DateTime picked = await showDatePicker(
@@ -23,10 +35,34 @@ class _AddTaskSubjectPageState extends State<AddTaskSubject> {
     }
   }
 
+  int planSemesterId = 2;
+
+  Future<int> fetchPlanSemester() async {
+    try {
+      var semesters = (await PlanSemesterService.read(
+          studentId: AuthService.userId,
+          isComplete: false,
+          JWTToken: AuthService.jwtToken)).toList();
+
+      return semesters.length == 0 ? null : semesters.first.planSemesterId;
+    } catch (Exception) {
+      return null;
+    }
+  }
+
+  @override
+  void initState() {
+    // planSemesterId =  fetchPlanSemester();
+    super.initState();
+  }
+
+  static final _formKey = GlobalKey<FormState>();
+
   @override
   Widget build(BuildContext context) {
-    final _formKey = GlobalKey<FormState>();
-    Size size = MediaQuery.of(context).size;
+    Size size = MediaQuery
+        .of(context)
+        .size;
 
     return SafeArea(
         child: Scaffold(
@@ -62,9 +98,79 @@ class _AddTaskSubjectPageState extends State<AddTaskSubject> {
                           SizedBox(
                             width: 125,
                           ),
-                          DropDown(
-                              arrayList: ['PRM391', 'SWD392'],
-                              valueSelected: 'PRM391')
+                          FutureBuilder(
+                            future: PlanSubjectService.read(
+                                planSemesterId: planSemesterId,
+                                JWTToken: AuthService.jwtToken),
+                            builder: (BuildContext context, snapshot) {
+                              if (snapshot.hasData) {
+                                print("has data1111");
+                                listPlanSubject = snapshot.data as List<
+                                    PlanSubjectModel>;
+                                print(listPlanSubject[0].subjectId);
+                                subjectId = listPlanSubject[0].subjectId;
+                                print("subjectId: " + subjectId);
+                                listPlanSubject.forEach((element) {
+                                  listSubjectId.add(element.subjectId);
+                                });
+                                return Row(
+                                  children: [
+                                    // DropdownButton<String>(
+                                    //   value: listPlanSubject
+                                    //       .map((e) => e.subjectId)
+                                    //       .first,
+                                    //   icon: Icon(Icons.arrow_drop_down),
+                                    //   iconSize: 24,
+                                    //   elevation: 16,
+                                    //   style:
+                                    //   TextStyle(
+                                    //       color: Colors.red, fontSize: 18),
+                                    //   underline: Container(
+                                    //     height: 2,
+                                    //     color: Colors.deepPurpleAccent,
+                                    //   ),
+                                    //   onChanged: (String value) {
+                                    //     changePlanSubject(value);
+                                    //   },
+                                    //   items: listPlanSubject
+                                    //       .map<String>((e) => e.subjectId)
+                                    //       .toList()
+                                    //       .map<DropdownMenuItem<String>>(
+                                    //           (String value) {
+                                    //         return DropdownMenuItem<String>(
+                                    //           value: value,
+                                    //           child: Text(
+                                    //              value),
+                                    //         );
+                                    //       }).toList(),
+                                    // ),
+                                    DropdownButton<String>(
+                                      value: subjectId,
+                                      icon: const Icon(Icons.arrow_downward),
+                                      iconSize: 24,
+                                      elevation: 16,
+                                      onChanged: (String newValue) {
+                                        setState(() {
+                                          subjectId = newValue;
+                                        });
+                                      },
+                                      items: listSubjectId
+                                          .map<DropdownMenuItem<String>>((
+                                          String value) {
+                                        return DropdownMenuItem<String>(
+                                          value: value,
+                                          child: new Text(value),
+                                        );
+                                      }).toList(),),
+                                  ],
+                                );
+                              } else {
+                                return Center(
+
+                                );
+                              }
+                            },
+                          ),
                         ],
                       ),
                       SizedBox(
@@ -79,9 +185,78 @@ class _AddTaskSubjectPageState extends State<AddTaskSubject> {
                           SizedBox(
                             width: 143,
                           ),
-                          DropDown(
-                              arrayList: ['PRM391', 'SWD392'],
-                              valueSelected: 'PRM391')
+                          FutureBuilder(
+                            future: TopicService.read(
+                                subjectId: subjectId,
+                                JWTToken: AuthService.jwtToken),
+                            builder: (BuildContext context, snapshot) {
+                              if (snapshot.hasData) {
+                                listTopic = snapshot.data as List<TopicModel>;
+                                topicId = listTopic[0].topicId;
+                                topicName = listTopic[0].topicName;
+                                listTopic.forEach((element) {
+                                  listTopicName.add(element.topicName);
+                                }
+                                );
+                                print("hasijdfl;sajdf");
+                                print(topicName);
+
+                                return Row(
+                                  children: [
+                                    // DropdownButton<String>(
+                                    //   value: listTopic
+                                    //       .map((e) => e.topicName)
+                                    //       .first.toString(),
+                                    //   icon: Icon(Icons.arrow_drop_down),
+                                    //   iconSize: 24,
+                                    //   elevation: 16,
+                                    //   style:
+                                    //   TextStyle(color: Colors.red, fontSize: 18),
+                                    //   underline: Container(
+                                    //     height: 2,
+                                    //     color: Colors.deepPurpleAccent,
+                                    //   ),
+                                    //   onChanged: (String value)  {
+                                    //     changePlanSubject(value);
+                                    //   },
+                                    //   items: listTopic
+                                    //       .map<String>((e) => e.topicName)
+                                    //       .toList()
+                                    //       .map<DropdownMenuItem<String>>(
+                                    //           (String value) {
+                                    //         return DropdownMenuItem<String>(
+                                    //           value: value,
+                                    //           child: Text(value == null ? "" : value),
+                                    //         );
+                                    //       }).toList(),
+                                    // ),
+                                    DropdownButton<String>(
+                                      value: topicName,
+                                      icon: const Icon(Icons.arrow_downward),
+                                      iconSize: 24,
+                                      elevation: 16,
+                                      onChanged: (String newValue) {
+                                        setState(() {
+                                          topicName = newValue;
+                                        });
+                                      },
+                                      items: listTopicName.map<DropdownMenuItem<String>>((
+                                          String value) {
+                                        return DropdownMenuItem<String>(
+                                          value: value,
+                                          child: new Text(value),
+                                        );
+                                      }).toList(),),
+
+                                  ],
+                                );
+                              } else {
+                                return Center(
+
+                                );
+                              }
+                            },
+                          ),
                         ],
                       ),
                       SizedBox(
@@ -139,7 +314,8 @@ class _AddTaskSubjectPageState extends State<AddTaskSubject> {
                                 border: InputBorder.none,
                               ),
                               controller: TextEditingController(
-                                  text: '${selectedDate.toLocal()}'.split(' ')[0]),
+                                  text: '${selectedDate.toLocal()}'.split(
+                                      ' ')[0]),
                               onTap: () {
                                 _selectDate(context);
                               },
@@ -228,7 +404,8 @@ class _AddTaskSubjectPageState extends State<AddTaskSubject> {
                             child: Text(
                               'ADD TASK',
                               style: TextStyle(
-                                  color: Colors.white, fontWeight: FontWeight.bold),
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold),
                             ),
                           ))
                     ],
@@ -239,6 +416,18 @@ class _AddTaskSubjectPageState extends State<AddTaskSubject> {
   Widget _labelTitle(String title) {
     return Text(title,
         style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20));
+  }
+
+  int planSubjectId;
+
+  void changePlanSubject(String value) {
+    setState(() {
+      listPlanSubject.forEach((element) {
+        if (element.subjectId == value) {
+          planSubjectId = element.planSubjectId;
+        }
+      });
+    });
   }
 }
 

@@ -5,9 +5,9 @@ import 'package:project/models/topic_model.dart';
 
 class TopicService {
   static Future<List<TopicModel>> read(
-      {String subjectId, String id, String JWTToken}) async {
+      {String subjectId, String topicId, String JWTToken}) async {
     //get all
-    if (subjectId == null && id == null) {
+    if (subjectId == null && topicId == null) {
       final response =
           await HttpHelper.get(TOPIC_ENPOINT, bearerToken: JWTToken);
       print(response.statusCode);
@@ -23,8 +23,8 @@ class TopicService {
       }
     }
     // search by id
-    else if (id != null && id != "") {
-      final response = await HttpHelper.get(TOPIC_ENPOINT + "/" + id,
+    else if (topicId != null && topicId != "") {
+      final response = await HttpHelper.get(TOPIC_ENPOINT + "/" + topicId,
           bearerToken: JWTToken);
       if (response.statusCode == 201) {
         final data = TopicModel.fromJson(jsonDecode(response.body));
@@ -75,7 +75,7 @@ class TopicService {
   static Future<TopicModel> update(TopicModel topicModel, String JWTToken) async {
     final response = await HttpHelper.put(SUBJECT_ENDPOINT, topicModel.toJson());
     final data = TopicModel.fromJson(jsonDecode(response.body));
-    final updateSubject = await read(id: '$topicModel.topicId', JWTToken: JWTToken);
+    final updateSubject = await read(topicId: '$topicModel.topicId', JWTToken: JWTToken);
     return updateSubject[0];
   }
 }

@@ -94,7 +94,7 @@ class AuthService {
     final response = await HttpHelper.post(LOGIN_ENDPOINT, model.toJson());
     if (response.statusCode == 200) {
       final data = LoginModel.fromJson(jsonDecode(response.body));
-      print("Token from api return: " + data.message);
+      print("idToken from api return: " + data.message);
       jwtToken = data.message;
       return data;
     } else {

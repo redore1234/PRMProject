@@ -8,6 +8,7 @@ class SemesterService {
       {String id, String bearerToken}) async {
     final response =
         await HttpHelper.get(SEMESTER_ENPOINT, bearerToken: bearerToken);
+    print(response.body);
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body) as List;
       List<SemesterModel> lst = [];

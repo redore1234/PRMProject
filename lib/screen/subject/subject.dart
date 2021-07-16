@@ -62,6 +62,7 @@ class _SubjectPageState extends State<SubjectPage> {
                 if (snapshot.hasData) {
                   listSemester = snapshot.data as List<SemesterModel>;
                   print("1" + currentNameSemester);
+                  print("has data");
                   return Container(
                     child: Column(
                       children: [
@@ -71,7 +72,7 @@ class _SubjectPageState extends State<SubjectPage> {
                               DropdownButton<String>(
                                 value: listSemester
                                     .map((e) => e.semesterName)
-                                    .first,
+                                    .last,
                                 icon: Icon(Icons.arrow_drop_down),
                                 iconSize: 24,
                                 elevation: 16,

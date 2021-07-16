@@ -9,6 +9,10 @@ class PlanSubjectService{
 
     final response = await HttpHelper.get(PLANSUBJECT_ENPOINT + "?PlanSemesterId=" + '$planSemesterId'  , bearerToken: JWTToken);
     final data = jsonDecode(response.body) as List;
+    print(response.statusCode);
+    print(response.body);
+    print("asdkjf;lsdaf");
+    print(data);
     List<PlanSubjectModel> lst = [];
     data.forEach((element) {
       lst.add(new PlanSubjectModel.fromJson(element));
