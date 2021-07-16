@@ -4,6 +4,7 @@ import 'package:project/screen/home/home.dart';
 import 'package:project/screen/profile/profile.dart';
 import 'package:project/screen/search_subject/search_subject.dart';
 import 'package:project/screen/subject/subject.dart';
+import 'package:project/screen/subject/subject.dart';
 import 'package:project/screen/task/task.dart';
 
 final GlobalKey<NavigatorState> firstTabNavKey = GlobalKey<NavigatorState>();

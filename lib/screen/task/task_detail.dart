@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:project/global/dropdown.dart';
+import 'package:project/services/auth_service.dart';
 import 'package:project/services/task_service.dart';
 
 class TaskDetailPage extends StatefulWidget {
@@ -100,7 +101,7 @@ class _TaskDetailPagePageState extends State<TaskDetailPage> {
         centerTitle: true,
       ),
       body: FutureBuilder(
-        future: TaskService.read(id: '$taskId', bearerToken: bearerToken),
+        future: TaskService.read(id: '$taskId', JWTToken: AuthService.jwtToken),
         builder: (BuildContext context, snapshot) {
           if (snapshot.hasData) {
             print("has data task id: ");

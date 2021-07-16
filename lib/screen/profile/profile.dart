@@ -2,8 +2,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:project/global/app_state.dart';
 import 'package:project/global/constant.dart';
-import 'package:project/provider/google_signin.dart';
 import 'package:project/screen/login/login.dart';
+import 'package:project/services/auth_service.dart';
 import 'package:provider/provider.dart';
 
 class ProfilePage extends StatelessWidget {
@@ -138,7 +138,7 @@ class ProfilePage extends StatelessWidget {
   Widget logoutButton(context) {
     return InkWell(
       onTap: () {
-        Authentication.signOut();
+        AuthService.signOut();
         Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (BuildContext context) => LoginScreen()), (route) => false);
       },
       child: Container(

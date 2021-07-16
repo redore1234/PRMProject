@@ -5,9 +5,9 @@ import 'package:project/models/plansemester_model.dart';
 import 'package:project/models/plansubject_model.dart';
 
 class PlanSubjectService{
-  static Future<List<PlanSubjectModel>> read({int planSemesterId , String bearerToken}) async{
+  static Future<List<PlanSubjectModel>> read({int planSemesterId , String JWTToken}) async{
 
-    final response = await HttpHelper.get(PLANSUBJECT_ENPOINT + "?PlanSemesterId=" + '$planSemesterId'  , bearerToken: bearerToken);
+    final response = await HttpHelper.get(PLANSUBJECT_ENPOINT + "?PlanSemesterId=" + '$planSemesterId'  , bearerToken: JWTToken);
     final data = jsonDecode(response.body) as List;
     List<PlanSubjectModel> lst = [];
     data.forEach((element) {

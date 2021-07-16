@@ -7,11 +7,11 @@ import 'package:project/models/topic_model.dart';
 class TaskService {
 
   static Future<List<TaskModel>> read(
-      {String planTopicId, String id, String bearerToken}) async {
+      {String planTopicId, String id, String JWTToken}) async {
     //get all
     if (planTopicId == null && id == null) {
       final response = await HttpHelper.get(
-          TASK_ENPOINT, bearerToken: bearerToken);
+          TASK_ENPOINT, bearerToken: JWTToken);
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body) as List;
         List<TaskModel> lst = [];
@@ -26,7 +26,7 @@ class TaskService {
     // search by id
     else if (id != null && id != "") {
       final response = await HttpHelper.get(
-          TASK_ENPOINT + "/" + id, bearerToken: bearerToken);
+          TASK_ENPOINT + "/" + id, bearerToken: JWTToken);
       if (response.statusCode == 200) {
         final data = TaskModel.fromJson(jsonDecode(response.body));
         return [data];
@@ -36,7 +36,7 @@ class TaskService {
     } else {
       final response = await HttpHelper.get(
           TASK_ENPOINT + "?PlanTopicId=" + planTopicId,
-          bearerToken: bearerToken);
+          bearerToken: JWTToken);
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body) as List;
         List<TaskModel> lst = [];
@@ -51,9 +51,9 @@ class TaskService {
   }
 
   static Future<TaskModel> insert(TaskModel taskModel,
-      String bearerToken) async {
+      String JWTToken) async {
     final response = await HttpHelper.post(
-        TASK_ENPOINT, taskModel.toJson(), bearerToken: bearerToken);
+        TASK_ENPOINT, taskModel.toJson(), bearerToken: JWTToken);
     if (response.statusCode == 201) {
       final data = TaskModel.fromJson(jsonDecode(response.body));
       return data;
@@ -63,7 +63,7 @@ class TaskService {
   }
 
 
-  static Future<String> delete(String id, String bearerToken) async {
+  static Future<String> delete(String id, String JWTToken) async {
     final response = await HttpHelper.post(SUBJECT_ENDPOINT, {"id": id});
     if (response.statusCode == 201) {
       final data = jsonDecode(response.body) as String;
@@ -73,10 +73,10 @@ class TaskService {
     }
   }
 
-  static Future<TaskModel> update(TaskModel taskModel, String bearerToken) async {
+  static Future<TaskModel> update(TaskModel taskModel, String JWTToken) async {
     final response = await HttpHelper.put(SUBJECT_ENDPOINT, taskModel.toJson());
     final data = TaskModel.fromJson(jsonDecode(response.body));
-    final updateSubject = await read(id: '$taskModel.id', bearerToken: bearerToken);
+    final updateSubject = await read(id: '$taskModel.id', JWTToken: JWTToken);
     return updateSubject[0];
   }
 }

@@ -7,11 +7,11 @@ import 'package:project/models/subject_model.dart';
 
 class SubjectService {
   static Future<List<SubjectModel>> read(
-      {String searchValue, String id, String bearerToken}) async {
+      {String searchValue, String id, String JWTToken}) async {
     //get all
     if (searchValue == null && id == null) {
       final response =
-          await HttpHelper.get(SUBJECT_ENDPOINT, bearerToken: bearerToken);
+          await HttpHelper.get(SUBJECT_ENDPOINT, bearerToken: JWTToken);
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body) as List;
         List<SubjectModel> lst = [];
@@ -26,7 +26,7 @@ class SubjectService {
     // search by id
     else if (id != null && id != "") {
       final response = await HttpHelper.get(SUBJECT_ENDPOINT + "/" + id,
-          bearerToken: bearerToken);
+          bearerToken: JWTToken);
       if (response.statusCode == 200) {
         final data = SubjectModel.fromJson(jsonDecode(response.body));
         return [data];
@@ -36,7 +36,7 @@ class SubjectService {
     } else {
       final response = await HttpHelper.get(
           SUBJECT_ENDPOINT + "?SubjectName=" + searchValue,
-          bearerToken: bearerToken);
+          bearerToken: JWTToken);
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body) as List;
         List<SubjectModel> lst = [];
@@ -62,7 +62,7 @@ class SubjectService {
     }
   }
 
-  static Future<String> delete(String id, String bearerToken) async {
+  static Future<String> delete(String id, String JWTToken) async {
     final response = await HttpHelper.post(SUBJECT_ENDPOINT, {"id": id});
     if (response.statusCode == 201) {
       final data = jsonDecode(response.body) as String;
@@ -72,13 +72,13 @@ class SubjectService {
     }
   }
 
-  static Future<SubjectModel> update(SubjectModel model, String bearerToken) async {
+  static Future<SubjectModel> update(SubjectModel model, String JWTToken) async {
     print(model.id);
     final response = await HttpHelper.put(SUBJECT_ENDPOINT, model.toJson());
     print(response.body);
     print(response.headers);
     final data = SubjectModel.fromJson(jsonDecode(response.body));
-    final updateSubject = await read(id: model.id, bearerToken: bearerToken);
+    final updateSubject = await read(id: model.id, JWTToken: JWTToken);
     return updateSubject[0];
   }
 }

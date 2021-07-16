@@ -5,11 +5,12 @@ import 'package:project/models/topic_model.dart';
 
 class TopicService {
   static Future<List<TopicModel>> read(
-      {String subjectId, String id, String bearerToken}) async {
+      {String subjectId, String id, String JWTToken}) async {
     //get all
     if (subjectId == null && id == null) {
       final response =
-          await HttpHelper.get(TOPIC_ENPOINT, bearerToken: bearerToken);
+          await HttpHelper.get(TOPIC_ENPOINT, bearerToken: JWTToken);
+      print(response.statusCode);
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body) as List;
         List<TopicModel> lst = [];
@@ -24,7 +25,7 @@ class TopicService {
     // search by id
     else if (id != null && id != "") {
       final response = await HttpHelper.get(TOPIC_ENPOINT + "/" + id,
-          bearerToken: bearerToken);
+          bearerToken: JWTToken);
       if (response.statusCode == 201) {
         final data = TopicModel.fromJson(jsonDecode(response.body));
         return [data];
@@ -34,7 +35,7 @@ class TopicService {
     } else {
       final response = await HttpHelper.get(
           TOPIC_ENPOINT + "?SubjectId=" + subjectId,
-          bearerToken: bearerToken);
+          bearerToken: JWTToken);
       if (response.statusCode == 201) {
         final data = jsonDecode(response.body) as List;
         List<TopicModel> lst = [];
@@ -48,10 +49,10 @@ class TopicService {
     }
   }
 
-  static Future<TopicModel> insert(TopicModel topic, String bearerToken) async {
+  static Future<TopicModel> insert(TopicModel topic, String JWTToken) async {
     print(topic.topicId);
     final response = await HttpHelper.post(TOPIC_ENPOINT, topic.toJson(),
-        bearerToken: bearerToken);
+        bearerToken: JWTToken);
     if(response.statusCode == 201){
       final data = TopicModel.fromJson(jsonDecode(response.body));
       print(data.topicId);
@@ -61,7 +62,7 @@ class TopicService {
     }
   }
 
-  static Future<String> delete(String id, String bearerToken) async {
+  static Future<String> delete(String id, String JWTToken) async {
     final response = await HttpHelper.post(SUBJECT_ENDPOINT, {"id": id});
     if (response.statusCode == 201) {
       final data = jsonDecode(response.body) as String;
@@ -71,10 +72,10 @@ class TopicService {
     }
   }
 
-  static Future<TopicModel> update(TopicModel topicModel, String bearerToken) async {
+  static Future<TopicModel> update(TopicModel topicModel, String JWTToken) async {
     final response = await HttpHelper.put(SUBJECT_ENDPOINT, topicModel.toJson());
     final data = TopicModel.fromJson(jsonDecode(response.body));
-    final updateSubject = await read(id: '$topicModel.topicId', bearerToken: bearerToken);
+    final updateSubject = await read(id: '$topicModel.topicId', JWTToken: JWTToken);
     return updateSubject[0];
   }
 }

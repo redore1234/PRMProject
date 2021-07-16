@@ -4,9 +4,9 @@ import 'package:project/helpers/http_helpers.dart';
 import 'package:project/models/plansemester_model.dart';
 
 class PlanSemesterService{
-  static Future<List<PlanSemesterModel>> read({String studentId, String semesterId,  String bearerToken}) async{
+  static Future<List<PlanSemesterModel>> read({String studentId, String semesterId,  String JWTToken}) async{
 
-    final response = await HttpHelper.get(PLANSEMESTER_ENPOINT + "?StudentId=" + studentId, bearerToken: bearerToken);
+    final response = await HttpHelper.get(PLANSEMESTER_ENPOINT + "?StudentId=" + studentId, bearerToken: JWTToken);
     final data = jsonDecode(response.body) as List;
     List<PlanSemesterModel> lst = [];
     data.forEach((element) {

@@ -4,6 +4,7 @@ import 'package:project/global/dropdown.dart';
 import 'package:project/models/plantopic_model.dart';
 import 'package:project/models/subject_model.dart';
 import 'package:project/screen/task/task_detail.dart';
+import 'package:project/services/auth_service.dart';
 import 'package:project/services/plan_topic_service.dart';
 import 'package:project/services/subject_service.dart';
 import 'package:project/services/task_service.dart';
@@ -16,22 +17,20 @@ class TopicPage extends StatefulWidget {
   final int topicId;
   final int planSubjectId;
 
-  final String bearerToken;
 
-  const TopicPage({Key key, @required this.topicId, this.planSubjectId, @required this.bearerToken}) : super(key: key);
+  const TopicPage({Key key, @required this.topicId, this.planSubjectId}) : super(key: key);
 
-  _TopicPageState createState() => _TopicPageState(this.topicId, this.planSubjectId, this.bearerToken);
+  _TopicPageState createState() => _TopicPageState(this.topicId, this.planSubjectId);
 }
 
 class _TopicPageState extends State<TopicPage> {
   DateTime selectedDate = DateTime.now();
   final int topicId;
   final int planSubjectId;
-  final String bearerToken;
    int planTopicIc;
 
 
-  _TopicPageState(this.topicId, this.planSubjectId, this.bearerToken);
+  _TopicPageState(this.topicId, this.planSubjectId);
 
   // Future<void> load() async {
   //   SubjectService.read(id: id).then((value) {
@@ -79,11 +78,9 @@ class _TopicPageState extends State<TopicPage> {
         ),
         body: Container(
           child: FutureBuilder(
-            future: TopicService.read(id: '$topicId', bearerToken: bearerToken),
+            future: TopicService.read(id: '$topicId', JWTToken: AuthService.jwtToken),
             builder: (BuildContext context, snapshot) {
               if (snapshot.hasData) {
-                print("subject detail: " + bearerToken);
-
 
                 print('hasdata111111');
 
@@ -101,7 +98,7 @@ class _TopicPageState extends State<TopicPage> {
                           color: Colors.grey,
 
                           child:  FutureBuilder(
-                              future: PlanTopicService.read(planSubjectId: '$planSubjectId', topicId: '$topicId', bearerToken: bearerToken),
+                              future: PlanTopicService.read(planSubjectId: '$planSubjectId', topicId: '$topicId', JWTToken: AuthService.jwtToken),
                               builder: (BuildContext context, snapshot){
                                 if(snapshot.hasData){
                                   print("has data:");
@@ -113,7 +110,7 @@ class _TopicPageState extends State<TopicPage> {
                                 }
                                 return Container(
                                   child: FutureBuilder(
-                                    future: TaskService.read(planTopicId: '$planTopicIc', bearerToken: bearerToken),
+                                    future: TaskService.read(planTopicId: '$planTopicIc', JWTToken: AuthService.jwtToken),
                                     builder: (BuildContext context, snapshot) {
                                       if (snapshot.hasData) {
                                         print("has data task");
@@ -129,7 +126,6 @@ class _TopicPageState extends State<TopicPage> {
                                                 snapshot.data[index].effortTime,
                                                 snapshot.data[index].estimateTime,
                                                 snapshot.data[index].taskId,
-                                                bearerToken,
                                               ),
                                             );
                                           },
@@ -235,7 +231,7 @@ class _TopicPageState extends State<TopicPage> {
   }
 }
 Widget subjectCourse(BuildContext context, String description,
-    String dueDate, int effortTime, int estimateTime, int taskId, String bearerToken) {
+    String dueDate, int effortTime, int estimateTime, int taskId) {
   return FlatButton(
       padding: EdgeInsets.all(20),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
@@ -245,7 +241,7 @@ Widget subjectCourse(BuildContext context, String description,
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => TaskDetailPage(taskId: taskId, bearerToken: bearerToken,),
+            builder: (context) => TaskDetailPage(taskId: taskId),
           ),
         );
         print("pressed");

@@ -4,11 +4,11 @@ import 'package:project/global/variable.dart';
 import 'package:project/models/login_models.dart';
 import 'package:project/models/major_model.dart';
 import 'package:project/models/subject_model.dart';
-import 'package:project/provider/google_signin.dart';
 import 'package:project/screen/add_subject/add_subject.dart';
 import 'package:project/screen/search_subject/search_subject.dart';
 import 'package:project/screen/student/add_student.dart';
 import 'package:project/screen/update_subject/subject_detail.dart';
+import 'package:project/services/auth_service.dart';
 import 'package:project/services/login_service.dart';
 import 'package:project/services/major_service.dart';
 import 'package:project/services/subject_service.dart';
@@ -51,7 +51,7 @@ class _PlanSubjectPageState extends State<PlanSubjectPage> {
                 return Container(
                   width: size.width,
                   child: FutureBuilder(
-                    future: SubjectService.read(bearerToken: bearerToken),
+                    future: SubjectService.read(JWTToken: AuthService.jwtToken),
                     builder: (BuildContext context, snapshot) {
                       if (snapshot.hasData) {
                         print('hasdata');

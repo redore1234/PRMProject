@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:project/global/dropdown.dart';
 import 'package:project/models/subject_model.dart';
 import 'package:project/screen/topic/topic.dart';
+import 'package:project/services/auth_service.dart';
 import 'package:project/services/subject_service.dart';
 import 'package:project/services/topic_service.dard.dart';
 import 'package:project/widget/base_ontap_widget.dart';
@@ -12,21 +13,20 @@ import 'package:switcher/switcher.dart';
 class SubjectDetailPage extends StatefulWidget {
   final String id;
   final int planSubjectId;
-  final String bearerToken;
 
-  const SubjectDetailPage({Key key, @required this.id, this.planSubjectId, @required this.bearerToken}) : super(key: key);
+  const SubjectDetailPage({Key key, @required this.id, this.planSubjectId})
+      : super(key: key);
 
-  _SubjectDetailPageState createState() => _SubjectDetailPageState(this.id, this.planSubjectId, this.bearerToken);
+  _SubjectDetailPageState createState() =>
+      _SubjectDetailPageState(this.id, this.planSubjectId);
 }
 
 class _SubjectDetailPageState extends State<SubjectDetailPage> {
   DateTime selectedDate = DateTime.now();
   final String id;
   final int planSubjectId;
-  final String bearerToken;
 
-
-  _SubjectDetailPageState(this.id, this.planSubjectId, this.bearerToken);
+  _SubjectDetailPageState(this.id, this.planSubjectId);
 
   // Future<void> load() async {
   //   SubjectService.read(id: id).then((value) {
@@ -73,74 +73,75 @@ class _SubjectDetailPageState extends State<SubjectDetailPage> {
           actions: <Widget>[],
         ),
         body: Container(
-          child: FutureBuilder(
-            future: SubjectService.read(id: id, bearerToken: bearerToken),
-            builder: (BuildContext context, snapshot) {
-              if (snapshot.hasData) {
-                return Container(
-                  child: Column(
-                    children: [
-                      Text(snapshot.data[0].id,
-                          style:
-                          TextStyle(fontSize: 25, fontWeight: FontWeight.bold)),
-                      Text(
-                        snapshot.data[0].name,
-                        style: TextStyle(fontSize: 23, fontWeight: FontWeight.bold)),
-                      Expanded(
-                        child: Container(
-                          color: Colors.green,
-                          child: FutureBuilder(
-                            future: TopicService.read(subjectId: id,bearerToken: bearerToken),
-                            builder: (BuildContext context, snapshot) {
-                              if (snapshot.hasData) {
-                                return ListView.builder(
-                                  itemCount: snapshot.data.length,
-                                  itemBuilder: (context, index) {
-                                    return Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                          vertical: 10),
-                                      child: subjectCourse(
-                                        context,
-                                        snapshot.data[index].topicName,
-                                        snapshot.data[index].topicDescription,
-                                        snapshot.data[index].topicId,
-                                        planSubjectId,
-                                        bearerToken,
-                                      ),
-                                    );
-                                  },
-                                );
-                              } else {
-                                return Center(
-                                  child: CircularProgressIndicator(
-                                    semanticsLabel: 'Loading...',
-                                  ),
-                                );
-                              }
-                            },
-                          ),
-
-
-
+            child: Column(
+          children: [
+            Expanded(
+              child: FutureBuilder(
+                future:
+                    SubjectService.read(id: id, JWTToken: AuthService.jwtToken),
+                builder: (BuildContext context, snapshot) {
+                  if (snapshot.hasData) {
+                    return Container(
+                      child: Column(
+                        children: [
+                          Text(snapshot.data[0].id,
+                              style: TextStyle(
+                                  fontSize: 25, fontWeight: FontWeight.bold)),
+                          Text(snapshot.data[0].name,
+                              style: TextStyle(
+                                  fontSize: 23, fontWeight: FontWeight.bold)),
+                        ],
+                      ),
+                    );
+                  } else {
+                    return Center(
+                      child: CircularProgressIndicator(
+                        semanticsLabel: 'Loading...',
+                      ),
+                    );
+                  }
+                },
+              ),
+              flex: 1,
+            ),
+            Expanded(
+              child: Container(
+                color: Colors.grey,
+                child: FutureBuilder(
+                  future: TopicService.read(
+                      subjectId: id, JWTToken: AuthService.jwtToken),
+                  builder: (BuildContext context, snapshot) {
+                    if (snapshot.hasData) {
+                      print("has data -----");
+                      return ListView.builder(
+                        itemCount: snapshot.data.length,
+                        itemBuilder: (context, index) {
+                          return Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 10),
+                            child: subjectCourse(
+                              context,
+                              snapshot.data[index].topicName,
+                              snapshot.data[index].topicDescription,
+                              snapshot.data[index].topicId,
+                              planSubjectId,
+                            ),
+                          );
+                        },
+                      );
+                    } else {
+                      return Center(
+                        child: CircularProgressIndicator(
+                          semanticsLabel: 'Loading...',
                         ),
-                        flex: 12,
-                      )
-
-
-                    ],
-                  ),
-                );
-              } else {
-                return Center(
-                  child: CircularProgressIndicator(
-                    semanticsLabel: 'Loading...',
-                  ),
-                );
-              }
-            },
-          ),
-        ),
-
+                      );
+                    }
+                  },
+                ),
+              ),
+              flex: 8,
+            ),
+          ],
+        )),
       ),
     );
   }
@@ -168,8 +169,9 @@ class _SubjectDetailPageState extends State<SubjectDetailPage> {
         style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20));
   }
 }
+
 Widget subjectCourse(BuildContext context, String subjectCode,
-    String subjectName, int topicId, int planSubjectId, String bearerToken) {
+    String subjectName, int topicId, int planSubjectId) {
   return FlatButton(
       padding: EdgeInsets.all(20),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
@@ -180,7 +182,8 @@ Widget subjectCourse(BuildContext context, String subjectCode,
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => TopicPage(topicId: topicId, planSubjectId: planSubjectId, bearerToken: bearerToken),
+            builder: (context) =>
+                TopicPage(topicId: topicId, planSubjectId: planSubjectId),
           ),
         );
         print("pressed");
@@ -192,13 +195,11 @@ Widget subjectCourse(BuildContext context, String subjectCode,
               children: [
                 Text(subjectCode,
                     style:
-                    TextStyle(fontSize: 15, fontWeight: FontWeight.bold)),
+                        TextStyle(fontSize: 15, fontWeight: FontWeight.bold)),
                 Text(
                   subjectName,
                   style: TextStyle(fontWeight: FontWeight.bold),
                 ),
-
-
               ],
             ),
           ),
