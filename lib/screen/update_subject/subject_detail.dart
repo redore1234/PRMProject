@@ -192,7 +192,7 @@ Widget subjectCourse(BuildContext context, String subjectCode,
           context,
           MaterialPageRoute(
             builder: (context) =>
-                TopicPage(topicId: topicId, planSubjectId: planSubjectId),
+                TopicPage(topicId: topicId, subjectId: subjectCode, planSubjectId: planSubjectId),
           ),
         );
         print("pressed");

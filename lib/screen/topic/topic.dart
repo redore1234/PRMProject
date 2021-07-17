@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:project/global/dropdown.dart';
 import 'package:project/models/plantopic_model.dart';
 import 'package:project/models/subject_model.dart';
+import 'package:project/screen/task/task.dart';
 import 'package:project/screen/task/task_detail.dart';
 import 'package:project/services/auth_service.dart';
 import 'package:project/services/plan_topic_service.dart';
@@ -16,21 +17,27 @@ import 'package:switcher/switcher.dart';
 class TopicPage extends StatefulWidget {
   final int topicId;
   final int planSubjectId;
+ final String subjectId;
 
 
-  const TopicPage({Key key, @required this.topicId, this.planSubjectId}) : super(key: key);
+  const TopicPage({Key key, @required this.topicId, @required this.subjectId, @required this.planSubjectId}) : super(key: key);
 
-  _TopicPageState createState() => _TopicPageState(this.topicId, this.planSubjectId);
+  _TopicPageState createState() => _TopicPageState(this.topicId, this.subjectId, this.planSubjectId);
 }
 
 class _TopicPageState extends State<TopicPage> {
   DateTime selectedDate = DateTime.now();
   final int topicId;
   final int planSubjectId;
+  final String subjectId;
+  //  int topicId =4;
+  //  int planSubjectId = 3;
+  //  String subjectId = "PRM391";
    int planTopicIc;
+   String topicName;
 
 
-  _TopicPageState(this.topicId, this.planSubjectId);
+  _TopicPageState(this.topicId, this.subjectId, this.planSubjectId);
 
   // Future<void> load() async {
   //   SubjectService.read(id: id).then((value) {
@@ -62,25 +69,57 @@ class _TopicPageState extends State<TopicPage> {
       child: Scaffold(
         resizeToAvoidBottomInset: false,
         appBar: AppBar(
-          leading: IconButton(
-            icon: Icon(
-              Icons.arrow_back,
-              color: Colors.black,
-            ),
-            onPressed: () => Navigator.of(context).pop(),
+          leading: Row(
+            children: [
+              IconButton(
+                icon: Icon(
+                  Icons.arrow_back,
+                  color: Colors.black,
+                ),
+                onPressed: () => Navigator.of(context).pop(),
+              ),
+
+            ],
           ),
           title: Text(
             "TOPIC".toUpperCase(),
             style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
           ),
+
           centerTitle: true,
-          actions: <Widget>[],
+
+          actions: <Widget>[
+            Padding(
+                padding: EdgeInsets.only(right: 20.0),
+                child: GestureDetector(
+                  onTap: () {},
+                  child: IconButton(
+                    onPressed: () {
+
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => AddTaskSubject(subjectId: subjectId, topicId: topicId, plansubjectId: planSubjectId, topicName: topicName,),
+                          // builder: (context) => AddTaskSubject(subjectId: "PRM391", topicId: 4, plansubjectId: 3, topicName: "Project",),
+                        ),
+                      );
+                      print("pressed");
+                    },
+                    icon: Icon(Icons.add_circle_outline_outlined),
+                    iconSize: 25,
+                  ),
+                )
+            ),
+
+          ],
+
         ),
         body: Container(
           child: FutureBuilder(
             future: TopicService.read(topicId: '$topicId', JWTToken: AuthService.jwtToken),
             builder: (BuildContext context, snapshot) {
               if (snapshot.hasData) {
+                topicName = snapshot.data[0].topicName;
 
                 print('hasdata111111');
 
@@ -126,6 +165,7 @@ class _TopicPageState extends State<TopicPage> {
                                                 snapshot.data[index].effortTime,
                                                 snapshot.data[index].estimateTime,
                                                 snapshot.data[index].taskId,
+
                                               ),
                                             );
                                           },

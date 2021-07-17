@@ -35,6 +35,7 @@ class _TaskDetailPagePageState extends State<TaskDetailPage> {
   DateTime dueDate;
 
   void initState() {
+
     super.initState();
 
     // Start listening to changes.

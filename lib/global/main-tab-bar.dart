@@ -6,6 +6,7 @@ import 'package:project/screen/search_subject/search_subject.dart';
 import 'package:project/screen/subject/subject.dart';
 import 'package:project/screen/subject/subject.dart';
 import 'package:project/screen/task/task.dart';
+import 'package:project/screen/topic/topic.dart';
 
 final GlobalKey<NavigatorState> firstTabNavKey = GlobalKey<NavigatorState>();
 final GlobalKey<NavigatorState> secondTabNavKey = GlobalKey<NavigatorState>();
@@ -48,7 +49,7 @@ class _MainTabBarState extends State<MainTabBar> {
         if (index == 0) {
           return CupertinoTabView(
             navigatorKey: firstTabNavKey,
-            builder: (BuildContext context) => Home(),
+            builder: (BuildContext context) => TopicPage(topicId: 4, subjectId: "PRM391", planSubjectId: 3),
           );
         } else if (index == 1) {
           return CupertinoTabView(
