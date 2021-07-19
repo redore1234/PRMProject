@@ -6,6 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:project/helpers/http_helpers.dart';
 import 'package:project/models/login_models.dart';
+import 'package:project/models/student_model.dart';
+import 'package:project/services/student_service.dart';
 
 class AuthService {
   static GoogleSignIn googleSignIn;
@@ -94,7 +96,6 @@ class AuthService {
     final response = await HttpHelper.post(LOGIN_ENDPOINT, model.toJson());
     if (response.statusCode == 200) {
       final data = LoginModel.fromJson(jsonDecode(response.body));
-      print("idToken from api return: " + data.message);
       jwtToken = data.message;
       return data;
     } else {
@@ -105,8 +106,8 @@ class AuthService {
   static Future getUserId() async {
     print("email: " + email.toString());
     print("jwtToken: " + jwtToken.toString());
-    // StudentModel model =          await StudentService.read(email: email, bearerToken: jwtToken);
-    // userId = model.studentId as int;
-    userId = "SE140129";
+    // StudentModel model =  await StudentService.read(email: email, bearerToken: jwtToken);
+    // userId = model.studentId;
+    userId = "SE130720";
   }
 }

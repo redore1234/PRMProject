@@ -49,7 +49,8 @@ class _MainTabBarState extends State<MainTabBar> {
         if (index == 0) {
           return CupertinoTabView(
             navigatorKey: firstTabNavKey,
-            builder: (BuildContext context) => TopicPage(topicId: 4, subjectId: "PRM391", planSubjectId: 3),
+              builder: (BuildContext context) => Home(),
+            // builder: (BuildContext context) => TopicPage(topicId: 4, subjectId: "PRM391", planSubjectId: 3),
           );
         } else if (index == 1) {
           return CupertinoTabView(
@@ -65,6 +66,7 @@ class _MainTabBarState extends State<MainTabBar> {
           return CupertinoTabView(
             navigatorKey: forthTabNavKey,
             builder: (BuildContext context) => ProfilePage(),
+
           );
         }
       },

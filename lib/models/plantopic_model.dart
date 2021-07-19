@@ -5,7 +5,7 @@ class PlanTopicModel {
   int topicId;
   int planSubjectId;
 
-  PlanTopicModel(this.planTopicId, this.progress, this.isComplete, this.topicId,
+  PlanTopicModel( this.progress, this.isComplete, this.topicId,
       this.planSubjectId);
 
   PlanTopicModel.fromJson(Map<String, dynamic> json) {
@@ -18,7 +18,6 @@ class PlanTopicModel {
 
   Map<String, dynamic> toJson() {
     Map<String, dynamic> data = new Map<String, dynamic>();
-    data['planTopicId'] = this.planTopicId;
     data['progress'] = this.progress;
     data['isComplete'] = this.isComplete;
     data['topicId'] = this.topicId;

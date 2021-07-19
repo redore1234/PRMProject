@@ -7,11 +7,11 @@ class TopicService {
   static Future<List<TopicModel>> read(
       {String subjectId, String topicId, String JWTToken}) async {
     //get all
-    print("topicId:" +subjectId);
+
+
     if (subjectId == null && topicId == null) {
       final response =
           await HttpHelper.get(TOPIC_ENPOINT, bearerToken: JWTToken);
-      print(response.statusCode);
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body) as List;
         List<TopicModel> lst = [];
@@ -27,8 +27,6 @@ class TopicService {
     else if (topicId != null && topicId != "") {
       final response = await HttpHelper.get(TOPIC_ENPOINT + "/" + topicId,
           bearerToken: JWTToken);
-      print(response.body);
-      print("alsdjf;ljsa");
 
       if (response.statusCode == 200) {
         final data = TopicModel.fromJson(jsonDecode(response.body));
@@ -40,8 +38,7 @@ class TopicService {
       final response = await HttpHelper.get(
           TOPIC_ENPOINT + "?SubjectId=" + subjectId,
           bearerToken: JWTToken);
-      print(response.body);
-      if (response.statusCode == 201) {
+      if (response.statusCode == 200) {
         final data = jsonDecode(response.body) as List;
         List<TopicModel> lst = [];
         data.forEach((element) {
@@ -58,7 +55,7 @@ class TopicService {
     print(topic.topicId);
     final response = await HttpHelper.post(TOPIC_ENPOINT, topic.toJson(),
         bearerToken: JWTToken);
-    if(response.statusCode == 201){
+    if(response.statusCode == 200){
       final data = TopicModel.fromJson(jsonDecode(response.body));
       print(data.topicId);
       return data;
@@ -69,7 +66,7 @@ class TopicService {
 
   static Future<String> delete(String id, String JWTToken) async {
     final response = await HttpHelper.post(SUBJECT_ENDPOINT, {"id": id});
-    if (response.statusCode == 201) {
+    if (response.statusCode == 200) {
       final data = jsonDecode(response.body) as String;
       return data;
     } else {

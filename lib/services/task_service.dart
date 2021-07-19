@@ -54,6 +54,7 @@ class TaskService {
       String JWTToken) async {
     final response = await HttpHelper.post(
         TASK_ENPOINT, taskModel.toJson(), bearerToken: JWTToken);
+    print("code" + response.statusCode.toString());
     if (response.statusCode == 201) {
       final data = TaskModel.fromJson(jsonDecode(response.body));
       return data;
@@ -63,20 +64,25 @@ class TaskService {
   }
 
 
-  static Future<String> delete(String id, String JWTToken) async {
-    final response = await HttpHelper.post(SUBJECT_ENDPOINT, {"id": id});
-    if (response.statusCode == 201) {
-      final data = jsonDecode(response.body) as String;
-      return data;
-    } else {
-      throw Exception('Failed to delete task by taskId');
-    }
+  static Future<String> delete(String taskId, String JWTToken) async {
+    final response = await HttpHelper.delete(TASK_ENPOINT + "/" + taskId, bearerToken: JWTToken);
+    print(response.statusCode);
+    print(response.body);
+    // if (response.statusCode == 204) {
+    //   final data = await jsonDecode(response.body) as String;
+    //   return data;
+    // } else {
+    //   throw Exception('Failed to delete task by taskId');
+    // }
   }
 
-  static Future<TaskModel> update(TaskModel taskModel, String JWTToken) async {
-    final response = await HttpHelper.put(SUBJECT_ENDPOINT, taskModel.toJson());
-    final data = TaskModel.fromJson(jsonDecode(response.body));
-    final updateSubject = await read(id: '$taskModel.id', JWTToken: JWTToken);
+  static Future<TaskModel> update(TaskModel taskModel, int taskId, String JWTToken) async {
+    final response = await HttpHelper.put(TASK_ENPOINT + "/" + '$taskId',  taskModel.toJson(), bearerToken: JWTToken);
+    print(TASK_ENPOINT + "/" + '$taskId');
+    print(response.statusCode);
+    print(response.body);
+    // final data = TaskModel.fromJson(jsonDecode(response.body) );
+    final updateSubject = await read(id: '$taskId', JWTToken: JWTToken);
     return updateSubject[0];
   }
 }

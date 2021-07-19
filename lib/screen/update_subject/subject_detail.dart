@@ -75,35 +75,35 @@ class _SubjectDetailPageState extends State<SubjectDetailPage> {
         body: Container(
             child: Column(
           children: [
-            Expanded(
-              child: FutureBuilder(
-                future:
-                    SubjectService.read(subjectId: id, JWTToken: AuthService.jwtToken),
-                builder: (BuildContext context, snapshot) {
-                  if (snapshot.hasData) {
-                    return Container(
-                      child: Column(
-                        children: [
-                          Text(snapshot.data[0].id,
-                              style: TextStyle(
-                                  fontSize: 25, fontWeight: FontWeight.bold)),
-                          Text(snapshot.data[0].name,
-                              style: TextStyle(
-                                  fontSize: 23, fontWeight: FontWeight.bold)),
-                        ],
-                      ),
-                    );
-                  } else {
-                    return Center(
-                      child: CircularProgressIndicator(
-                        semanticsLabel: 'Loading...',
-                      ),
-                    );
-                  }
-                },
-              ),
-              flex: 1,
-            ),
+            Expanded(child: FutureBuilder(
+              future:
+              SubjectService.read(subjectId: id, JWTToken: AuthService.jwtToken),
+              builder: (BuildContext context, snapshot) {
+                if (snapshot.hasData) {
+                  print("has data subjectDetail");
+                  return Container(
+                    child: Column(
+                      children: [
+
+                        Text(snapshot.data[0].id,
+                            style: TextStyle(
+                                fontSize: 25, fontWeight: FontWeight.bold)),
+                        Text(snapshot.data[0].name,
+                            style: TextStyle(
+                                fontSize: 23, fontWeight: FontWeight.bold)),
+
+                      ],
+                    ),
+                  );
+                } else {
+                  return Center(
+                    child: CircularProgressIndicator(
+                      semanticsLabel: 'Loading...',
+                    ),
+                  );
+                }
+              },
+            ),),
             Expanded(
               child: Container(
                 color: Colors.grey,
@@ -114,6 +114,7 @@ class _SubjectDetailPageState extends State<SubjectDetailPage> {
                     if (snapshot.hasData) {
                       print("has data -----");
                       return ListView.builder(
+                        shrinkWrap: true,
                         itemCount: snapshot.data.length,
                         itemBuilder: (context, index) {
                           return Padding(
@@ -133,8 +134,8 @@ class _SubjectDetailPageState extends State<SubjectDetailPage> {
                       return Center(
                         child: Text(
 
-                            "No data",
-                            style: TextStyle(fontWeight: FontWeight.bold),
+                          "No data",
+                          style: TextStyle(fontWeight: FontWeight.bold),
 
                         ),
 
@@ -149,6 +150,48 @@ class _SubjectDetailPageState extends State<SubjectDetailPage> {
               ),
               flex: 8,
             ),
+
+            // Expanded(child: FutureBuilder(
+            //   future: TopicService.read(
+            //       subjectId: id, JWTToken: AuthService.jwtToken),
+            //   builder: (BuildContext context, snapshot) {
+            //     if (snapshot.hasData) {
+            //       print("has data -----");
+            //       return ListView.builder(
+            //         itemCount: snapshot.data.length,
+            //         itemBuilder: (context, index) {
+            //           return Padding(
+            //             padding: const EdgeInsets.symmetric(vertical: 10),
+            //             child: subjectCourse(
+            //               context,
+            //               snapshot.data[index].topicName,
+            //               snapshot.data[index].topicDescription,
+            //               snapshot.data[index].topicId,
+            //               planSubjectId,
+            //             ),
+            //           );
+            //         },
+            //       );
+            //     } else {
+            //
+            //       return Center(
+            //         child: Text(
+            //
+            //           "No data",
+            //           style: TextStyle(fontWeight: FontWeight.bold),
+            //
+            //         ),
+            //
+            //
+            //         // child: CircularProgressIndicator(
+            //         //   semanticsLabel: 'Loading...',
+            //         // ),
+            //       );
+            //     }
+            //   },
+            // ),),
+
+
           ],
         )),
       ),

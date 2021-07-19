@@ -11,7 +11,6 @@ class PlanTopicService{
     print("from plantopic: ");
     if (topicId == null && id == null && planSubjectId == null) {
       final response = await HttpHelper.get(PLANTOPIC_ENPOINT , bearerToken: JWTToken);
-      print(response.body);
       final data = jsonDecode(response.body) as List;
       List<PlanTopicModel> lst = [];
       data.forEach((element) {
@@ -35,13 +34,19 @@ class PlanTopicService{
       return lst;
     }
   }
-  static Future<TopicModel> insert(TopicModel topic, String JWTToken) async {
-    print(topic.topicId);
-    final response = await HttpHelper.post(PLANTOPIC_ENPOINT, topic.toJson(), bearerToken: JWTToken);
-    print('post student');
-    final data = TopicModel.fromJson(jsonDecode(response.body));
-    print(data.topicId);
-    return data;
+
+
+  static Future<PlanTopicModel> insert(PlanTopicModel planTopicModel,
+      String JWTToken) async {
+    final response = await HttpHelper.post(
+        PLANTOPIC_ENPOINT, planTopicModel.toJson(), bearerToken: JWTToken);
+    print("code" + response.statusCode.toString());
+    if (response.statusCode == 201) {
+      final data = PlanTopicModel.fromJson(jsonDecode(response.body));
+      return data;
+    }else{
+      throw Exception('Failed to insert task');
+    }
   }
   static Future <TopicModel> getTopicById({String subjectId, String id, String JWTToken}) async{
     final response = await HttpHelper.get(TOPIC_ENPOINT +"/"+ id, bearerToken: JWTToken);

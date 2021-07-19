@@ -19,6 +19,6 @@ class TopicModel{
     data['topicName'] = this.topicName;
     data['topicDescription'] = this.topicDescription;
     data['subjectId'] = this.subjectId;
-
+return data;
   }
 }

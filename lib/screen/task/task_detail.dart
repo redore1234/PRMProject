@@ -1,23 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:project/global/dropdown.dart';
+import 'package:project/models/task_model.dart';
 import 'package:project/services/auth_service.dart';
 import 'package:project/services/task_service.dart';
 
 class TaskDetailPage extends StatefulWidget {
   final int taskId;
-  final String bearerToken;
+  final int planTopicId;
 
-  const TaskDetailPage({Key key, this.taskId, @required this.bearerToken})
+  const TaskDetailPage({Key key, this.taskId, this.planTopicId})
       : super(key: key);
 
   _TaskDetailPagePageState createState() =>
-      _TaskDetailPagePageState(this.taskId, this.bearerToken);
+      _TaskDetailPagePageState(this.taskId, this.planTopicId);
 }
 
 class _TaskDetailPagePageState extends State<TaskDetailPage> {
   final int taskId;
+   int planTopicId;
   int index = 0;
-  final String bearerToken;
   var descriptionController = TextEditingController();
 
   final estimatedTimeController = TextEditingController();
@@ -51,6 +52,7 @@ class _TaskDetailPagePageState extends State<TaskDetailPage> {
   }
 
   void getData() {
+    print("taskId: " + '$taskId');
     print(descriptionController.text);
     print(category);
     print(priority);
@@ -61,7 +63,7 @@ class _TaskDetailPagePageState extends State<TaskDetailPage> {
 
   }
 
-  _TaskDetailPagePageState(this.taskId, this.bearerToken);
+  _TaskDetailPagePageState(this.taskId, this.planTopicId);
 
   DateTime selectedDate = DateTime.now();
   String description;
@@ -111,11 +113,12 @@ class _TaskDetailPagePageState extends State<TaskDetailPage> {
             category = listTaskCategory[snapshot.data[0].taskCategoryId - 1];
             status = snapshot.data[0].isComplete;
             statusString = (status == true) ? "Finished" : "Ongoing";
-            // descriptionController.value = descriptionController.value.copyWith(text: snapshot.data[0].taskDescription);
+            descriptionController.value = descriptionController.value.copyWith(text: snapshot.data[0].taskDescription);
             estimatedTimeController.value = estimatedTimeController.value
                 .copyWith(text: '${snapshot.data[0].estimateTime}');
             effortTimeController.value = effortTimeController.value
                 .copyWith(text: '${snapshot.data[0].effortTime}');
+            planTopicId = snapshot.data[0].planTopicId;
             return SingleChildScrollView(
               child: Form(
                 key: _formKey,
@@ -142,7 +145,7 @@ class _TaskDetailPagePageState extends State<TaskDetailPage> {
                         child: SizedBox(
                       width: 350,
                       child: TextFormField(
-                        initialValue: snapshot.data[0].taskDescription,
+                        controller: descriptionController,
                         maxLines: 5,
                         decoration: InputDecoration(
                             border: OutlineInputBorder(
@@ -368,8 +371,19 @@ class _TaskDetailPagePageState extends State<TaskDetailPage> {
                             padding: EdgeInsets.symmetric(
                                 vertical: 20, horizontal: 40),
                             color: Colors.orangeAccent,
-                            onPressed: () {
+                            onPressed: () async {
                               getData();
+                              int estimateTime = int.parse(estimatedTimeController.text);
+                              int effortTime = int.parse(effortTimeController.text);
+                              print("des: " + descriptionController.text);
+                              TaskModel taskModel = new TaskModel(descriptionController.text.toString(), selectedDate.toString(), estimateTime, effortTime,
+                                  dueDate.toString(), listPriority.indexOf(priority), false, planTopicId, listTaskCategory.indexOf(category)  +1);
+                              print(planTopicId);
+                              TaskModel.fromTaskModel(taskModel);
+                              print("Task: " + taskModel.toJson().toString());
+                              print("Task: " + taskModel.toJson().toString());
+                              await TaskService.update(taskModel, taskId, AuthService.jwtToken);
+                              showAlertDialog(context, "Update Task", "Sucessfully");
                             },
                             child: Text(
                               'UPDATE',
@@ -384,8 +398,9 @@ class _TaskDetailPagePageState extends State<TaskDetailPage> {
                             padding: EdgeInsets.symmetric(
                                 vertical: 20, horizontal: 40),
                             color: Colors.orangeAccent,
-                            onPressed: () {
-
+                            onPressed: () async{
+                              await TaskService.delete('$taskId', AuthService.jwtToken);
+                              showAlertDialog(context, "Delete Task", "Sucessfully");
 
                             },
                             child: Text(
@@ -424,4 +439,30 @@ class _TaskDetailPagePageState extends State<TaskDetailPage> {
 class AlwaysDisabledFocusNode extends FocusNode {
   @override
   bool get hasFocus => false;
+}
+showAlertDialog(BuildContext context, String title, String content) {
+  // Create button
+  Widget okButton = FlatButton(
+    child: Text("OK"),
+    onPressed: () {
+      Navigator.of(context).pop();
+    },
+  );
+
+  // Create AlertDialog
+  AlertDialog alert = AlertDialog(
+    title: Text(title),
+    content: Text(content),
+    actions: [
+      okButton,
+    ],
+  );
+
+  // show the dialog
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return alert;
+    },
+  );
 }

@@ -17,7 +17,7 @@ class SubjectPage extends StatefulWidget {
 
 class _SubjectPageState extends State<SubjectPage> {
   List<SemesterModel> listSemester = [];
-  String currentNameSemester = "";
+  String currentNameSemester = "Summer_2021";
   List<PlanSubjectModel> listPlanSubject = [];
   int planSemesterId = 0;
 
@@ -72,7 +72,8 @@ class _SubjectPageState extends State<SubjectPage> {
                               DropdownButton<String>(
                                 value: listSemester
                                     .map((e) => e.semesterName)
-                                    .last,
+                                    .first,
+                                // value: currentNameSemester,
                                 icon: Icon(Icons.arrow_drop_down),
                                 iconSize: 24,
                                 elevation: 16,
@@ -116,7 +117,7 @@ class _SubjectPageState extends State<SubjectPage> {
                                       JWTToken: AuthService.jwtToken),
                                   builder: (BuildContext context, snapshot) {
                                     if (snapshot.hasData) {
-                                      print("has data plansubject");
+                                      print("hello");
                                       return ListView.builder(
                                         itemCount: snapshot.data.length,
                                         itemBuilder: (context, index) {

@@ -15,7 +15,6 @@ class LoginService{
     final response = await HttpHelper.post(LOGIN_ENDPOINT, model.toJson());
     if(response.statusCode == 200){
       final data = LoginModel.fromJson(jsonDecode(response.body));
-      print("Token from api return: " + data.message);
       bearerToken = data.message;
       return data;
     }else{

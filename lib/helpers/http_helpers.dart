@@ -3,8 +3,8 @@ import 'dart:io';
 
 import 'package:http/http.dart' as http;
 
-const DOMAIN = 'https://5331f2073ce4.ngrok.io/api/v1';
-const DOMAIN_SEARCH_STUDENT = 'https://5331f2073ce4.ngrok.io/v1.1';
+const DOMAIN = 'https://38f0e90d9a92.ngrok.io/api/v1';
+const DOMAIN_SEARCH_STUDENT = 'https://38f0e90d9a92.ngrok.io/api/v1.1';
 const LOGIN_ENDPOINT = DOMAIN + '/auths/login-google';
 const SUBJECT_ENDPOINT = DOMAIN + '/subjects';
 const MAJOR_ENDPOINT = DOMAIN + '/majors';
@@ -40,6 +40,11 @@ class HttpHelper {
         HttpHeaders.authorizationHeader: 'Bearer $bearerToken'
       },
     ));
+  }
+  static Future<http.Response> delete(String url,
+      {String bearerToken}) async {
+   return await http.delete(Uri.parse(url),
+       headers: {HttpHeaders.authorizationHeader: 'Bearer $bearerToken'});
   }
 
   static Future<http.Response> get(String url, {String bearerToken}) async {

@@ -33,7 +33,7 @@ class _TopicPageState extends State<TopicPage> {
   //  int topicId =4;
   //  int planSubjectId = 3;
   //  String subjectId = "PRM391";
-   int planTopicIc;
+   int planTopicId;
    String topicName;
 
 
@@ -99,7 +99,7 @@ class _TopicPageState extends State<TopicPage> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => AddTaskSubject(subjectId: subjectId, topicId: topicId, plansubjectId: planSubjectId, topicName: topicName,),
+                          builder: (context) => AddTaskSubject(subjectId: subjectId, topicId: topicId, plansubjectId: planSubjectId, planTopicId: planTopicId, topicName: topicName,),
                           // builder: (context) => AddTaskSubject(subjectId: "PRM391", topicId: 4, plansubjectId: 3, topicName: "Project",),
                         ),
                       );
@@ -122,6 +122,7 @@ class _TopicPageState extends State<TopicPage> {
                 topicName = snapshot.data[0].topicName;
 
                 print('hasdata111111');
+                print("has data topic");
 
                 return Container(
                   child: Column(
@@ -139,48 +140,67 @@ class _TopicPageState extends State<TopicPage> {
                           child:  FutureBuilder(
                               future: PlanTopicService.read(planSubjectId: '$planSubjectId', topicId: '$topicId', JWTToken: AuthService.jwtToken),
                               builder: (BuildContext context, snapshot){
-                                if(snapshot.hasData){
-                                  print("has data:");
+                                if(snapshot.hasData ){
+                                  print("has data123:");
                                   final data = snapshot.data as List<PlanTopicModel>;
-                                   planTopicIc = data.elementAt(0).planTopicId;
-                                   print("data: " + '$planTopicIc');
+                                  if(!data.isEmpty){
+                                    planTopicId = data.elementAt(0).planTopicId;
+                                    print("data: " + '$planTopicId');
+                                    return Container(
+                                      child: FutureBuilder(
+                                        future: TaskService.read(planTopicId: '$planTopicId', JWTToken: AuthService.jwtToken),
+                                        builder: (BuildContext context, snapshot) {
+                                          if (snapshot.hasData) {
+                                            print("has data task");
+                                            return ListView.builder(
+                                              shrinkWrap: true,
+                                              itemCount: snapshot.data.length,
+                                              itemBuilder: (context, index) {
+                                                return Padding(
+                                                  padding: const EdgeInsets.symmetric(vertical: 10),
+                                                  child: subjectCourse(
+                                                    context,
+                                                    snapshot.data[index].taskDescription,
+                                                    snapshot.data[index].dueDate,
+                                                    snapshot.data[index].effortTime,
+                                                    snapshot.data[index].estimateTime,
+                                                    snapshot.data[index].taskId,
 
-
-                                }
-                                return Container(
-                                  child: FutureBuilder(
-                                    future: TaskService.read(planTopicId: '$planTopicIc', JWTToken: AuthService.jwtToken),
-                                    builder: (BuildContext context, snapshot) {
-                                      if (snapshot.hasData) {
-                                        print("has data task");
-                                        return ListView.builder(
-                                          itemCount: snapshot.data.length,
-                                          itemBuilder: (context, index) {
-                                            return Padding(
-                                              padding: const EdgeInsets.symmetric(vertical: 10),
-                                              child: subjectCourse(
-                                                context,
-                                                snapshot.data[index].taskDescription,
-                                                snapshot.data[index].dueDate,
-                                                snapshot.data[index].effortTime,
-                                                snapshot.data[index].estimateTime,
-                                                snapshot.data[index].taskId,
-
+                                                  ),
+                                                );
+                                              },
+                                            );
+                                          } else {
+                                            print("hello 1231223123");
+                                            return Center(
+                                              child: CircularProgressIndicator(
+                                                semanticsLabel: 'Loading...',
                                               ),
                                             );
-                                          },
-                                        );
-                                      } else {
-                                        print("hello");
-                                        return Center(
-                                          child: CircularProgressIndicator(
-                                            semanticsLabel: 'Loading...',
-                                          ),
-                                        );
-                                      }
-                                    },
-                                  ),
-                                );
+                                          }
+                                        },
+                                      ),
+                                    );
+                                  }else {
+                                    planTopicId = 0;
+                                    print("hello 1231223123");
+                                    return Center(
+                                      child: CircularProgressIndicator(
+                                        semanticsLabel: 'Loading...',
+                                      ),
+                                    );
+                                  }
+
+                                }else {
+                                  planTopicId = 0;
+                                  print("hello 1231223123");
+                                  return Center(
+                                    child: CircularProgressIndicator(
+                                      semanticsLabel: 'Loading...',
+                                    ),
+                                  );
+                                }
+
                               }
                           ),
 

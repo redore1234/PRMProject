@@ -10,8 +10,20 @@ class TaskModel{
   int planTopicId;
   int taskCategoryId;
 
-  TaskModel(this.taskId, this.taskDescription, this.createDate, this.estimateTime, this.effortTime, this.dueDate, this.priority, this.isComplete
+  TaskModel(this.taskDescription, this.createDate, this.estimateTime, this.effortTime, this.dueDate, this.priority, this.isComplete
       ,this.planTopicId, this.taskCategoryId);
+
+
+
+
+  TaskModel.fromTaskModel(TaskModel taskModel){
+    this.taskDescription = taskModel.taskDescription;
+    this.estimateTime = taskModel.estimateTime;
+    this.effortTime = taskModel.effortTime;
+    this.dueDate = taskModel.dueDate;
+    this.priority = taskModel.priority;
+    this.isComplete = isComplete;
+  }
 
   TaskModel.fromJson(Map<String, dynamic> json){
     this.taskId = json['taskId'];
@@ -38,5 +50,6 @@ class TaskModel{
     data['isComplete'] = this.isComplete;
     data['planTopicId'] = this.planTopicId;
     data['taskCategoryId'] = this.taskCategoryId;
+    return data;
   }
 }
